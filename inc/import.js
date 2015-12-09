@@ -23,61 +23,69 @@ function $import(file,callback,import_queue){
     }
 }
 
-$_import={};
-$_import.QUEUES=[];
-$_import._IMPORTERS={};
-$_import.load_next_script=function(q){   
-    if(q.LOADED_SCRIPTS===q.INCLUDED_SCRIPTS.length){
-        q.LOADING=false;
-        return;        
-    } 
-    q.LOADING=true;
-    var v=q.INCLUDED_SCRIPTS[q.LOADED_SCRIPTS++];  
-    $_import._load_script(v,$_import.load_next_script(q));       
-}
-
-$_import.registerImporter=function(name,func){
-    $_import._IMPORTERS[name]=func;  
-}
-$_import.init=function(){
-    if (document.readyState === "complete"){
-        $forEach($_import.QUEUES,function(q){
-            $_import.load_next_script(q);
-        });
-    }else {
-        window.onload=(function(){
-            $forEach($_import.QUEUES,(function(q){
+$_import={  
+    QUEUES:[],
+    _IMPORTERS:{},
+    init:function(){
+        if (document.readyState === "complete"){
+            $forEach($_import.QUEUES,function(q){
+                if(q.LOADING)return;
                 $_import.load_next_script(q);
-                if(typeof this==='function')this();
-            }).bind(this));
-        }).bind(window.onload);   
-    }
-}
-$_import._load_dependency=function(file,callback){
-    var v={f:file,c:callback};
-    this._load_script(v);
-}
-$_import._appendCode=function(code,path,callback){
-    for(var ext in $_import._IMPORTERS){
-        if(path.indexOf(ext, path.length-ext.length)!==-1){
-            $_import._IMPORTERS[ext](code,path,callback);
-            break;
+            });
+        }else {
+            window.onload=(function(){
+                $forEach($_import.QUEUES,(function(q){
+                    if(q.LOADING)return;
+                    $_import.load_next_script(q);
+                    if(typeof this==='function')this();
+                }).bind(this));
+            }).bind(window.onload);   
         }
-    }        
-}
-$_import._load_script=function(v,done){
-    $http(v.f,function(status,code){            
-        $_import._appendCode(code,v.f,function(){
-            if(typeof v.c!=="undefined")v.c();                 
-            if(done)done();     
+    },
+    registerImporter:function(name,func){
+        $_import._IMPORTERS[name]=func;  
+    },
+    _load_dependency:function(file,callback){
+        var v={f:file,c:callback};
+        $_import._load_script(v);
+    },
+    load_next_script:function(q){   
+        if(q.LOADED_SCRIPTS===q.INCLUDED_SCRIPTS.length){q.LOADING=false;return;} 
+        q.LOADING=true;
+        var v=q.INCLUDED_SCRIPTS[q.LOADED_SCRIPTS];  
+        $debug("Import",v.f,q.LOADED_SCRIPTS);
+        q.LOADED_SCRIPTS++;
+        $_import._load_script(v,function(){$_import.load_next_script(q);});       
+    },
+    _load_script:function(v,done){
+        $http(v.f,function(status,code){   
+            if(!status){
+                $debug("Cannot import",v.f);
+                return;
+            }
+            $_import._appendCode(code,v.f,function(){
+                if(done)done();     
+                if(typeof v.c!=="undefined"){
+                    $debug(v.f,"has a callback");
+                    v.c();                 
+                }
+            });
         });
-    });
-}
-$_import.Queue=function(){
-    this.INCLUDED_SCRIPTS=[];
-    this.LOADED_SCRIPTS=0;
-    this.LOADING=false;   
- 
+    },
+    _appendCode:function(code,path,callback){
+        $verboseDebug("Append",code);
+        for(var ext in $_import._IMPORTERS){
+            if(path.indexOf(ext, path.length-ext.length)!==-1){
+                $_import._IMPORTERS[ext](code,path,callback);
+                break;
+            }
+        }        
+    },
+    Queue:function(){
+        this.INCLUDED_SCRIPTS=[];
+        this.LOADED_SCRIPTS=0;
+        this.LOADING=false;  
+    }
 }
 
 $_import.init();

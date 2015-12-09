@@ -1,6 +1,6 @@
 ImageParser={
     parse:function(in_content,out_array){
-        var pattern=new RegExp("<img\\ss*src\\s*=\\s*\\\\?\"([^\\\\\"]+)",'gi');
+        var pattern=new RegExp("<img\\ss*src\\s*=\\s*\"([^\"]+)",'gi');
         var matched;
         while((matched=pattern.exec(in_content))!=null){    
             if(matched.length>=1){

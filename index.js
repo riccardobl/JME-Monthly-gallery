@@ -1,6 +1,8 @@
 $import([
     // Import parsers
-    "parsers/ImageParser.js"
+    "parsers/ImageParser.js",
+    "parsers/VideoParser.js",
+    "parsers/YoutubeParser.js"
 
 ],$main);
 
@@ -11,8 +13,10 @@ function $main(){
     
     var gallery=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","https://crossorigin.me/");
     gallery.getParserManager().addParser(ImageParser);
+    gallery.getParserManager().addParser(VideoParser);
+    gallery.getParserManager().addParser(YoutubeParser);
 
-    gallery.get(Calendar.get(month_offset),function(status, output){
+    gallery.get(Calendar.fromMonthOffset(month_offset),function(status, output){
         if(!status){
             $debug("Error!");
             return;
@@ -31,7 +35,6 @@ function $main(){
                     post.content[i].vars    (ex. exclude,anothervar=possiblevalue,yesItsCsv)                   
             */
             
-            $debug(post.score);
             for(var j=0;j<post.content.length;j++){
                 
                 if($arrContains(post.content[j],"exclude")){
@@ -40,14 +43,17 @@ function $main(){
                 }
                 
                 
-                if($startWith(post.content[j].type,"image")){
+                if($startWith(post.content[j].type,"image/")){
                     var img = document.createElement("img");
                     img.src = post.content[j].value;
                     img.style.maxWidth="400px";
                     document.body.appendChild(img);
+                }else if(post.content[j].type==="youtube"){
+                    document.body.innerHTML+="<iframe width=\"420\" height=\"315\" src=\"http://www.youtube.com/embed/"+post.content[j].value+"\"></iframe> ";
                 }
   
             }
         }
+        loadig(false);
     });
 }

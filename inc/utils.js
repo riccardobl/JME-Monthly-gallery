@@ -10,11 +10,11 @@ function $arrContains(array,element){
     for(var i=0;i<array.length;i++){
         if(array[i]===element)return true;
     }
-    return false;
+    return false; 
 }
 
 function $forEach(array,func){
     for(var i=0;i<array.length;i++){
         func(array[i]);
     }
-}
+} 
