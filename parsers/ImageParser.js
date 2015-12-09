@@ -2,7 +2,6 @@ ImageParser={
     parse:function(in_content,out_array){
         var pattern=new RegExp("<img\\ss*src\\s*=\\s*\\\\?\"([^\\\\\"]+)",'gi');
         var matched;
-        if(matched!=null)$debug(matched[1]);        
         while((matched=pattern.exec(in_content))!=null){    
             if(matched.length>=1){
                 var img=matched[1];
