@@ -21,7 +21,8 @@ ParserManager=function(){
             o_obj.created_at=post.created_at;
             o_obj.updated_at=post.updated_at;
             o_obj.score=post.score;
-            o_obj.url=base_url+""+post.topic_id+"/"+post.id;                       
+            o_obj.url=base_url+""+post.topic_id+"/"+(i+1);
+            o_obj.post_id=post.id;
         }  
         this._orderByScore(output);
         return output;
