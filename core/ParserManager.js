@@ -23,8 +23,23 @@ ParserManager=function(){
             o_obj.score=post.score;
             o_obj.url=base_url+""+post.topic_id+"/"+post.id;                       
         }  
+        this._orderByScore(output);
         return output;
     }
+    this._orderByScore=function(array){ // Bubblesort
+        var cnt=true;
+        while(cnt){
+            cnt=false;
+            for(var i=0;i<array.length-1;i++){
+                if(array[i].score<array[i+1].score){
+                    var tmp=array[i];
+                    array[i]=array[i+1];
+                    array[i+1]=tmp;
+                    cnt=true;
+                }
+            }
+        }
+    },
     this._parseContent=function(content){ // Return array of media
         var out_array=[];
         for(var i=0;i<this._PARSERS.length;i++){

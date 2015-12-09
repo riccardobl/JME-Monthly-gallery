@@ -31,7 +31,7 @@ function $main(){
                     post.content[i].vars    (ex. exclude,anothervar=possiblevalue,yesItsCsv)                   
             */
             
-            
+            $debug(post.score);
             for(var j=0;j<post.content.length;j++){
                 
                 if($arrContains(post.content[j],"exclude")){
