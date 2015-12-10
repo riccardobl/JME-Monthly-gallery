@@ -1,0 +1,75 @@
+@bar-size:60px;
+@bar-bg:rgb(34,34,34);
+@bar-fg:#fff;
+@bar-border:rgb(34,34,34);
+@bg:rgb(56,56,56);
+@jme-title-color:rgb(243,200,2);
+@title-font-size:30px;
+@title-font-size-paddig: 15px;
+
+@font-face {
+    font-family: 'FOO';
+    src: url(fonts/foo.ttf);
+}
+
+body{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.bar{
+    background-color:@bar-bg;
+    color:@bar-fg;
+    position:fixed;
+    left:0;
+    width:100vw;
+    height:@bar-size;
+    border:none;
+    -webkit-box-shadow: 0px 0px 1vh .5vh @bar-border;
+    -moz-box-shadow: 0px 0px 1vh .5vh @bar-border;
+    box-shadow: 0px 0px 1vh .5vh @bar-border;
+    z-index:2;
+}
+
+#top{   
+    &:extend(.bar);
+    top:0;
+    border-bottom:2px solid @bar-border;  
+}
+
+#bottom{ 
+    &:extend(.bar);
+    bottom:0;
+    border-top:2px solid @bar-border;
+}
+
+#middle{ 
+    position:absolute;
+    top:@bar-size;
+    left:0; 
+    width:100%;
+    padding-bottom:@bar-size;
+    min-height:100%;
+    z-index:1;
+    background-color:@bg;
+}
+
+#title{
+    position:absolute;
+    top:50%;
+    left:2%;
+    font-size: @title-font-size;
+    margin-top:-@title-font-size-paddig;
+    font-family:'FOO';
+    color:@jme-title-color;
+    white-space:nowrap;
+}
+
+#title:first-letter{
+    text-transform: uppercase;
+}
+
