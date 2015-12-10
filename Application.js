@@ -69,7 +69,7 @@ function refreshPage(){
                     var video_frame=$('<iframe id="video_frame" width="100%" height="100%" src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
                     video_frame.appendTo($("#video_popup"));
                     //Showing popup background
-                    $("#video_popup_background").fadeIn(1000); 
+                    $("#video_popup_background").fadeIn(200); 
                 }.bind(post.content[j].value));
                 
                 /*document.getElementById("middle").innerHTML+='<a href="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0"> <img src="http://img.youtube.com/vi/"'+post.content[j].value+'"/hqdefault.jpg"></img></a>"';*/
@@ -100,7 +100,7 @@ function drawUI(){
     video_popup_background.hide();
     video_popup_background.click(function() {
         $("#video_frame").remove();
-        video_popup_background.fadeOut(1000); 
+        video_popup_background.fadeOut(200); 
         //video_popup_background.hide();
     });
     //Popup
