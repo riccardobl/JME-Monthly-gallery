@@ -57,26 +57,19 @@ function refreshPage(){
                 //Creating div
                 var container=$("<div></div>");
                 container.css({"background-image":"url('http://img.youtube.com/vi/"+post.content[j].value+"/hqdefault.jpg')"});
-                container.addClass("videoContainer");
+                container.addClass("video_container");
                 //Creating play button
-                var playArrow=$("<img src='ytarrow.png'>");
-                playArrow.appendTo(container);
-                //playArrow.css({"position":"absolute","left":"150px","top":"125px","width":"100px","height":"75px"});
-                playArrow.addClass("playButton");
+                var play_arrow=$("<img src='ytarrow.png'>");
+                play_arrow.appendTo(container);
+                //play_arrow.css({"position":"absolute","left":"150px","top":"125px","width":"100px","height":"75px"});
+                play_arrow.addClass("play_arrow");
                 container.appendTo($("#middle"));               
-                playArrow.click(function() {
-                    //Popup background
-                    var videoPopupBackground=$("<div id='videoPopupBackground'></div>");
-                    videoPopupBackground.appendTo($("#middle"));  
-                    videoPopupBackground.click(function() {
-                       videoPopupBackground.remove(); 
-                    });
-                    //Popup
-                    var videoPopup=$("<div id='videoPopup'></div>");
-                    videoPopup.appendTo($("#videoPopupBackground"));
+                play_arrow.click(function() {
                     //Video iframe
-                    var videoFrame=$('<iframe id="videoFrame" width="100%" height="100%" src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
-                    videoFrame.appendTo($("#videoPopup"));
+                    var video_frame=$('<iframe id="video_frame" width="100%" height="100%" src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
+                    video_frame.appendTo($("#video_popup"));
+                    //Showing popup background
+                    $("#video_popup_background").fadeIn(1000); 
                 }.bind(post.content[j].value));
                 
                 /*document.getElementById("middle").innerHTML+='<a href="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0"> <img src="http://img.youtube.com/vi/"'+post.content[j].value+'"/hqdefault.jpg"></img></a>"';*/
@@ -100,7 +93,19 @@ function drawUI(){
     var title=$("<div id='title'></div>");
     title.appendTo(top);
     
-    
+    //Video popup
+    //Popup background
+    var video_popup_background=$("<div id='video_popup_background'></div>"); 
+    video_popup_background.appendTo($("#middle"));
+    video_popup_background.hide();
+    video_popup_background.click(function() {
+        $("#video_frame").remove();
+        video_popup_background.fadeOut(1000); 
+        //video_popup_background.hide();
+    });
+    //Popup
+    var videoPopup=$("<div id='video_popup'></div>");
+    videoPopup.appendTo($("#video_popup_background"));   
 }
 
 function $main(){
