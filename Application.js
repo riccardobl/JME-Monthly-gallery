@@ -26,8 +26,8 @@ MONTH_OFFSET=0;
 
 
 function queryGallery(){
-    GALLERY.get(Calendar.fromMonthOffset(MONTH_OFFSET),function(status, output){
-        GALLERY_ELEMENTS=status?output:[];
+    GALLERY.get(Calendar.fromMonthOffset(MONTH_OFFSET),function( output){
+        GALLERY_ELEMENTS=output;
         refreshPage();
     });
 }
@@ -41,7 +41,7 @@ function refreshPage(){
     document.title = "JMonkeyEngine: "+title;
     
     for(var i=0;i<GALLERY_ELEMENTS.length;i++){
-        var post=GALLERY_ELEMENTS[i];            
+        var post=GALLERY_ELEMENTS[i];          
         for(var j=0;j<post.content.length;j++){            
             if($arrContains(post.content[j],"exclude")){
                 $debug("Excluded");
