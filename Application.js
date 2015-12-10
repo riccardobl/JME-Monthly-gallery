@@ -51,9 +51,38 @@ function refreshPage(){
                 var img = document.createElement("img");
                 img.src = post.content[j].value;
                 img.style.maxWidth="400px";
+                img.style.maxHeight="300px";
                 document.getElementById("middle").appendChild(img);
             }else if(post.content[j].type==="youtube"){
-                document.getElementById("middle").innerHTML+='<iframe width="420" height="315" src="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
+                //Creating div
+                var container=$("<div></div>");
+                container.css({"background-image":"url('http://img.youtube.com/vi/"+post.content[j].value+"/hqdefault.jpg')"});
+                container.addClass("videoContainer");
+                //Creating play button
+                var playArrow=$("<img src='ytarrow.png'>");
+                playArrow.appendTo(container);
+                //playArrow.css({"position":"absolute","left":"150px","top":"125px","width":"100px","height":"75px"});
+                playArrow.addClass("playButton");
+                container.appendTo($("#middle"));               
+                playArrow.click(function() {
+                    //Popup background
+                    var videoPopupBackground=$("<div id='videoPopupBackground'></div>");
+                    videoPopupBackground.appendTo($("#middle"));  
+                    videoPopupBackground.click(function() {
+                       videoPopupBackground.remove(); 
+                    });
+                    //Popup
+                    var videoPopup=$("<div id='videoPopup'></div>");
+                    videoPopup.appendTo($("#videoPopupBackground"));
+                    //Video iframe
+                    var videoFrame=$('<iframe id="videoFrame" width="100%" height="100%" src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
+                    videoFrame.appendTo($("#videoPopup"));
+                }.bind(post.content[j].value));
+                
+                /*document.getElementById("middle").innerHTML+='<a href="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0"> <img src="http://img.youtube.com/vi/"'+post.content[j].value+'"/hqdefault.jpg"></img></a>"';*/
+                
+                
+                /*document.getElementById("middle").innerHTML+='<iframe width="420" height="315" src="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';*/
             }  
         }
     }

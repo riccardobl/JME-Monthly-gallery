@@ -3,6 +3,8 @@
 @bar-fg:#fff;
 @bar-border:rgb(34,34,34);
 @bg:rgb(56,56,56);
+@videoFrame-border:rgba(100,100,100,.2);
+@videoPopup-border:rgba(50,50,50,1);
 @jme-title-color:rgb(243,200,2);
 @title-font-size:30px;
 @title-font-size-paddig: 15px;
@@ -33,6 +35,56 @@ body{
     -moz-box-shadow: 0px 0px 1vh .5vh @bar-border;
     box-shadow: 0px 0px 1vh .5vh @bar-border;
     z-index:2;
+}
+
+.videoContainer{ 
+    width:400px;
+    height:350px;
+    position:relative; 
+    background-position:center;
+    background-repeat:no-repeat;
+}
+
+.playButton{
+    position:relative;
+    left:150px;
+    top:125px;
+    width:100px;
+    height:75px;
+}
+
+#videoFrame {
+    width:100%;
+    height:100%;
+    position:relative;
+    //left:10%;
+    //top:10%;
+    //box-shadow: 0px 0px 10vh 0vh @videoFrame-border;
+}
+
+#videoPopup{
+    background-color:black;
+    width:35%;
+    height:40%;
+    position:fixed;
+    top:30%;
+    left:30%;
+    box-shadow: 0px 0px 10vh 0vh @videoPopup-border;
+}
+
+#videoPopupBackground{
+    background-color:rgba(0,0,0,0);
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0px;
+    left:0px;
+    z-index:3;
+    transition: background-color 1s,height 1s;
+}
+
+#videoPopupBackground:hover{
+    background-color:rgba(0,0,0,0.8);
 }
 
 #top{   
