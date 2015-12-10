@@ -99,7 +99,7 @@ function drawUI(){
     video_popup_background.appendTo($("#middle"));
     video_popup_background.hide();
     video_popup_background.click(function() {
-        video_popup_background.fadeOut(200, function() {
+        video_popup_background.fadeOut(500, function() {
             $("#video_frame").remove();
         }); 
         //video_popup_background.hide();
