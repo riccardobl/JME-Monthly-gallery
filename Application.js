@@ -59,8 +59,8 @@ function refreshPage(){
                 preview_container.appendTo($("#middle"));
                 preview_container.click(function() {
                     //Video iframe
-                    var fullview_frame=$('<img id="fullview_frame" src="'+this+'" width="100%" height="100%">');
-                    fullview_frame.appendTo($("#fullsize_popup"));
+                    var fullsize_frame=$('<img id="fullsize_frame" src="'+this+'">');
+                    fullsize_frame.appendTo($("#fullsize_popup"));
                     //Showing popup background
                     $("#fullsize_popup_background").fadeIn(200); 
                 }.bind(post.content[j].value));
@@ -106,13 +106,16 @@ function drawUI(){
     fullsize_popup_background.hide();
     fullsize_popup_background.click(function() {
         fullsize_popup_background.fadeOut(500, function() {
-            $("#fullview_frame").remove();
+            $("#fullsize_frame").remove();
         }); 
         //fullsize_popup_background.hide();
     });
+    //Popup aligner
+    var fullsize_popup_aligner=$("<div id='fullsize_popup_aligner'></div>");
+    fullsize_popup_aligner.appendTo($("#fullsize_popup_background"));   
     //Popup
     var fullsize_popup=$("<div id='fullsize_popup'></div>");
-    fullsize_popup.appendTo($("#fullsize_popup_background"));   
+    fullsize_popup.appendTo($("#fullsize_popup_aligner"));   
 }
 
 function $main(){
