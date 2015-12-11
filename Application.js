@@ -51,9 +51,31 @@ function refreshPage(){
                 var img = document.createElement("img");
                 img.src = post.content[j].value;
                 img.style.maxWidth="400px";
+                img.style.maxHeight="300px";
                 document.getElementById("middle").appendChild(img);
             }else if(post.content[j].type==="youtube"){
-                document.getElementById("middle").innerHTML+='<iframe width="420" height="315" src="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
+                //Creating div
+                var container=$("<div></div>");
+                container.css({"background-image":"url('http://img.youtube.com/vi/"+post.content[j].value+"/hqdefault.jpg')"});
+                container.addClass("video_container");
+                //Creating play button
+                var play_arrow=$("<img src='ytarrow.png'>");
+                play_arrow.appendTo(container);
+                //play_arrow.css({"position":"absolute","left":"150px","top":"125px","width":"100px","height":"75px"});
+                play_arrow.addClass("play_arrow");
+                container.appendTo($("#middle"));               
+                play_arrow.click(function() {
+                    //Video iframe
+                    var video_frame=$('<iframe id="video_frame" width="100%" height="100%" src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
+                    video_frame.appendTo($("#video_popup"));
+                    //Showing popup background
+                    $("#video_popup_background").fadeIn(200); 
+                }.bind(post.content[j].value));
+                
+                /*document.getElementById("middle").innerHTML+='<a href="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0"> <img src="http://img.youtube.com/vi/"'+post.content[j].value+'"/hqdefault.jpg"></img></a>"';*/
+                
+                
+                /*document.getElementById("middle").innerHTML+='<iframe width="420" height="315" src="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';*/
             }  
         }
     }
@@ -71,7 +93,20 @@ function drawUI(){
     var title=$("<div id='title'></div>");
     title.appendTo(top);
     
-    
+    //Video popup
+    //Popup background
+    var video_popup_background=$("<div id='video_popup_background'></div>"); 
+    video_popup_background.appendTo($("#middle"));
+    video_popup_background.hide();
+    video_popup_background.click(function() {
+        video_popup_background.fadeOut(500, function() {
+            $("#video_frame").remove();
+        }); 
+        //video_popup_background.hide();
+    });
+    //Popup
+    var videoPopup=$("<div id='video_popup'></div>");
+    videoPopup.appendTo($("#video_popup_background"));   
 }
 
 function $main(){
