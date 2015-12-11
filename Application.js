@@ -76,7 +76,7 @@ function drawUI(){
 
 function $main(){
     drawUI();
-    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","https://crossorigin.me/");
+    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","http://cors-gate-for-the-internette.frk.wf/");
     GALLERY.getParserManager().addParser(ImageParser);
     GALLERY.getParserManager().addParser(VideoParser);
     GALLERY.getParserManager().addParser(YoutubeParser);
