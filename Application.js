@@ -46,36 +46,42 @@ function refreshPage(){
             if($arrContains(post.content[j],"exclude")){
                 $debug("Excluded");
                 continue;
-            }                              
+            }
+            //Creating div
             if($startWith(post.content[j].type,"image/")){
-                var img = document.createElement("img");
-                img.src = post.content[j].value;
-                img.style.maxWidth="400px";
-                img.style.maxHeight="300px";
-                document.getElementById("middle").appendChild(img);
+                var preview_container=$("<div></div>");
+                var preview_image=$("<img src='"+post.content[j].value+"'>");
+                preview_image.css({"max-width":"100%"});
+                preview_image.addClass("preview_image");
+                preview_image.appendTo(preview_container);
+                //preview_container.css({"background-image":"url('"+post.content[j].value+"')"});
+                preview_container.addClass("preview_container");  
+                preview_container.appendTo($("#middle"));
+                preview_container.click(function() {
+                    //Video iframe
+                    var fullview_frame=$('<img id="fullview_frame" src="'+this+'" width="100%" height="100%">');
+                    fullview_frame.appendTo($("#fullsize_popup"));
+                    //Showing popup background
+                    $("#fullsize_popup_background").fadeIn(200); 
+                }.bind(post.content[j].value));
             }else if(post.content[j].type==="youtube"){
-                //Creating div
-                var container=$("<div></div>");
-                container.css({"background-image":"url('http://img.youtube.com/vi/"+post.content[j].value+"/hqdefault.jpg')"});
-                container.addClass("video_container");
+                var preview_container=$("<div></div>");
+                preview_container.css({"background-image":"url('http://img.youtube.com/vi/"+post.content[j].value+"/hqdefault.jpg')"});
+                preview_container.addClass("preview_container");
+                preview_container.addClass("preview_image");
                 //Creating play button
                 var play_arrow=$("<img src='ytarrow.png'>");
-                play_arrow.appendTo(container);
+                play_arrow.appendTo(preview_container);
                 //play_arrow.css({"position":"absolute","left":"150px","top":"125px","width":"100px","height":"75px"});
                 play_arrow.addClass("play_arrow");
-                container.appendTo($("#middle"));               
+                preview_container.appendTo($("#middle"));               
                 play_arrow.click(function() {
                     //Video iframe
-                    var video_frame=$('<iframe id="video_frame" width="100%" height="100%" src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
-                    video_frame.appendTo($("#video_popup"));
+                    var fullview_frame=$('<iframe id="fullview_frame" width="100%" height="100%" src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
+                    fullview_frame.appendTo($("#fullsize_popup"));
                     //Showing popup background
-                    $("#video_popup_background").fadeIn(200); 
+                    $("#fullsize_popup_background").fadeIn(200); 
                 }.bind(post.content[j].value));
-                
-                /*document.getElementById("middle").innerHTML+='<a href="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0"> <img src="http://img.youtube.com/vi/"'+post.content[j].value+'"/hqdefault.jpg"></img></a>"';*/
-                
-                
-                /*document.getElementById("middle").innerHTML+='<iframe width="420" height="315" src="https://www.youtube-nocookie.com/embed/'+post.content[j].value+'?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';*/
             }  
         }
     }
@@ -93,20 +99,20 @@ function drawUI(){
     var title=$("<div id='title'></div>");
     title.appendTo(top);
     
-    //Video popup
+    //Full view popup
     //Popup background
-    var video_popup_background=$("<div id='video_popup_background'></div>"); 
-    video_popup_background.appendTo($("#middle"));
-    video_popup_background.hide();
-    video_popup_background.click(function() {
-        video_popup_background.fadeOut(500, function() {
-            $("#video_frame").remove();
+    var fullsize_popup_background=$("<div id='fullsize_popup_background'></div>"); 
+    fullsize_popup_background.appendTo($("#middle"));
+    fullsize_popup_background.hide();
+    fullsize_popup_background.click(function() {
+        fullsize_popup_background.fadeOut(500, function() {
+            $("#fullview_frame").remove();
         }); 
-        //video_popup_background.hide();
+        //fullsize_popup_background.hide();
     });
     //Popup
-    var videoPopup=$("<div id='video_popup'></div>");
-    videoPopup.appendTo($("#video_popup_background"));   
+    var fullsize_popup=$("<div id='fullsize_popup'></div>");
+    fullsize_popup.appendTo($("#fullsize_popup_background"));   
 }
 
 function $main(){

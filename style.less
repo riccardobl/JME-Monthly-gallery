@@ -1,13 +1,15 @@
 @bar-size:60px;
 @bar-bg:rgb(34,34,34);
 @bar-fg:#fff;
-@bar-border:rgb(34,34,34);
-@bg:rgb(56,56,56);
-@videoFrame-border:rgba(100,100,100,.2);
-@videoPopup-border:rgba(50,50,50,1);
+@bar-shadow:rgb(34,34,34);
+@preview-container-shadow:rgba(50,100,100,.3);
+@fullview-frame-shadow:rgba(100,100,100,.2);
+@fullview-popup-shadow:rgba(50,50,50,1);
+@preview-container-border:rgba(10,10,10,1);
 @jme-title-color:rgb(243,200,2);
 @title-font-size:30px;
 @title-font-size-paddig: 15px;
+@bg:rgb(56,56,56);
 
 @font-face {
     font-family: 'FOO';
@@ -31,18 +33,27 @@ body{
     width:100vw;
     height:@bar-size;
     border:none;
-    -webkit-box-shadow: 0px 0px 1vh .5vh @bar-border;
-    -moz-box-shadow: 0px 0px 1vh .5vh @bar-border;
-    box-shadow: 0px 0px 1vh .5vh @bar-border;
+    -webkit-box-shadow: 0px 0px 1vh .5vh @bar-shadow;
+    -moz-box-shadow: 0px 0px 1vh .5vh @bar-shadow;
+    box-shadow: 0px 0px 1vh .5vh @bar-shadow;
     z-index:2;
 }
 
-.video_container{ 
+.preview_container{ 
     width:400px;
     height:350px;
     position:relative; 
+    display:inline-block;
     background-position:center;
     background-repeat:no-repeat;
+}
+
+.preview_image{
+    border: 2px solid @preview-container-border;   
+}
+
+.preview_image:hover {
+    box-shadow: 0px 0px 2vh 0vh @preview-container-shadow;
 }
 
 .play_arrow{
@@ -53,26 +64,26 @@ body{
     height:75px;
 }
 
-#video_frame {
+#fullview_frame {
     width:100%;
     height:100%;
     position:relative;
     //left:10%;
     //top:10%;
-    //box-shadow: 0px 0px 10vh 0vh @videoFrame-border;
+    //box-shadow: 0px 0px 10vh 0vh @fullview_frame_border;
 }
 
-#video_popup{
+#fullsize_popup{
     background-color:black;
-    width:35%;
-    height:40%;
+    width:45%;
+    height:50%;
     position:fixed;
-    top:30%;
-    left:30%;
-    box-shadow: 0px 0px 10vh 0vh @videoPopup-border;
+    top:25%;
+    left:25%;
+    box-shadow: 0px 0px 10vh 0vh @fullview-popup-shadow;
 }
 
-#video_popup_background{
+#fullsize_popup_background{
     background-color:rgba(20,20,20,0.9);
     width:100%;
     height:100%;
@@ -90,13 +101,13 @@ body{
 #top{   
     &:extend(.bar);
     top:0;
-    border-bottom:2px solid @bar-border;  
+    border-bottom:2px solid @bar-shadow;  
 }
 
 #bottom{ 
     &:extend(.bar);
     bottom:0;
-    border-top:2px solid @bar-border;
+    border-top:2px solid @bar-shadow;
 }
 
 #middle{ 
