@@ -12,9 +12,10 @@ $import(["Settings.js"],function(){
         "core/ParserManager.js",
         "core/MonthlyGallery.js",
 
-        // Import parsers
         "//code.jquery.com/jquery-1.11.3.min.js",
-
+        "//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js",
+        
+        // Import parsers
         "parsers/ImageParser.js",
         "parsers/VideoParser.js",
         "parsers/YoutubeParser.js"
@@ -122,9 +123,12 @@ function drawElements(container,elements){
 
 function drawElement(container,element){
     if($startWith(element.type,"image/")){        
-        var image=$("<img src='"+element.value+"'>");
+        var image=$("<img src='' data-original='"+element.value+"'>");
         image.appendTo(container); 
         image.click(function(){toFullScreen(image.clone()); });
+        image.lazyload({
+            effect : "fadeIn"
+        });
     }else if($startWith(element.type,"youtube")){
         var video_preview=$("<div></div>");
         video_preview.addClass("video_preview");
@@ -133,17 +137,14 @@ function drawElement(container,element){
             var video=$('<iframe src="https://www.youtube.com/embed/'+element.value+'?autoplay=1" frameborder="0"></iframe>');
             toFullScreen(video);                    
         });
-        var preview_image=$("<img src='http://img.youtube.com/vi/"+element.value+"/hqdefault.jpg' />");
+        var preview_image=$("<img src='' data-original='http://img.youtube.com/vi/"+element.value+"/hqdefault.jpg' />");
         preview_image.appendTo(video_preview);
-        
+        preview_image.lazyload();
         //Creating play button
         //var play_arrow=$("<img src='ytarrow.png'>");
         //play_arrow.appendTo(video_preview);
         //play_arrow.addClass("play_arrow");
-        //play_arrow.click(function() {
-        //    var video=$('<iframe src="https://www.youtube.com/embed/'+element.value+'?autoplay=1" frameborder="0"></iframe>');
-        //    toFullScreen(video);                    
-        //});
+
     }
 }
 
