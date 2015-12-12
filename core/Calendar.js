@@ -31,7 +31,10 @@ Calendar={
     },
     toMonthOffset:function(calendar_date){
         var today=new Date();
-        today.setMonth(today.getMonth()-Calendar._MONTHS.indexOf(calendar_date.month));
-        return today.getMonth();
+        var d1=new Date(calendar_date.year,Calendar._MONTHS.indexOf(calendar_date.month),1);
+        var d2=new Date(today.getFullYear(),today.getMonth(),1);
+        var offset=d2.getMonth() - d1.getMonth() + (12 * (d2.getFullYear() - d1.getFullYear()));
+        $debug(d2,"-",d1,"=",offset);
+        return offset;
     }
 }

@@ -49,11 +49,11 @@ function initializeTemplate(){
         $("#fullscreen_view").click(hideFullScreen);
         $("#current_date #left_arrow").click(function(){
             loading(true);
-            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
+            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)+1));
         });
         $("#current_date #right_arrow").click(function(){
             loading(true);
-            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)+1));
+            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
 
         });
     }else CAN_LOAD_TEMPLATE=true;
