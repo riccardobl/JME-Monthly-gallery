@@ -107,6 +107,11 @@ $_import._IMPORTERS[".css"]=function(code,path,done){
     done();
 }
 
+$_import._IMPORTERS[".html"]=function(code,path,done){
+    document.body.innerHTML+=code;
+    done();
+}
+
 $_import._IMPORTERS[".less"]=function(code,path,done){
     var load_with_less=function(){
         less.render(code, {}).then(

@@ -2,6 +2,14 @@ $import(["Settings.js"],function(){
     $import([
         "style.less"
     ],undefined,1);
+    
+    $import([
+        "templates/base.html"
+    ],undefined,2);
+     $import([
+        "templates/fullscreen-view.html"
+    ],undefined,3);
+            
 
     $import([
         "core/Calendar.js",
@@ -32,6 +40,18 @@ function queryGallery(){
     });
 }
 
+
+function toFullScreen(element){
+    var fullscreen_view=$("#fullscreen_view");
+    element.appendTo(fullscreen_view.find("#frame"));
+    fullscreen_view.fadeIn(200); 
+    fullscreen_view.click(function(){
+        fullscreen_view.fadeOut(200,function(){
+            element.remove(); 
+        }); 
+    });
+}
+
 function refreshPage(){ 
     loading(true);
     
@@ -53,16 +73,14 @@ function refreshPage(){
                 var preview_image=$("<img src='"+post.content[j].value+"'>");
                 preview_image.css({"max-width":"100%"});
                 preview_image.addClass("preview_image");
-                preview_image.appendTo(preview_container);
+                preview_image.appendTo(preview_container); 
                 //preview_container.css({"background-image":"url('"+post.content[j].value+"')"});
                 preview_container.addClass("preview_container");  
                 preview_container.appendTo($("#middle"));
                 preview_container.click(function() {
                     //Video iframe
-                    var fullsize_frame=$('<img id="fullsize_frame" src="'+this+'">');
-                    fullsize_frame.appendTo($("#fullsize_popup"));
-                    //Showing popup background
-                    $("#fullsize_popup_background").fadeIn(200); 
+                    var image=$('<img src="'+this+'">');
+                    toFullScreen(image);                    
                 }.bind(post.content[j].value));
             }else if(post.content[j].type==="youtube"){
                 var preview_container=$("<div></div>");
@@ -76,11 +94,8 @@ function refreshPage(){
                 play_arrow.addClass("play_arrow");
                 preview_container.appendTo($("#middle"));               
                 play_arrow.click(function() {
-                    //Video iframe
-                    var fullview_frame=$('<iframe id="fullview_frame" width="100%" height="100%" src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
-                    fullview_frame.appendTo($("#fullsize_popup"));
-                    //Showing popup background
-                    $("#fullsize_popup_background").fadeIn(200); 
+                    var video=$('<iframe src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
+                    toFullScreen(video);                    
                 }.bind(post.content[j].value));
             }  
         }
@@ -88,38 +103,9 @@ function refreshPage(){
     loading(false);
 }
 
-function drawUI(){
-    var top=$("<div id='top'></div>");
-    top.appendTo($('body'));
-    var bottom=$("<div id='bottom'></div>");
-    bottom.appendTo($('body'));
-    var middle=$("<div id='middle'></div>");
-    middle.appendTo($('body'));
-    
-    var title=$("<div id='title'></div>");
-    title.appendTo(top);
-    
-    //Full view popup
-    //Popup background
-    var fullsize_popup_background=$("<div id='fullsize_popup_background'></div>"); 
-    fullsize_popup_background.appendTo($("#middle"));
-    fullsize_popup_background.hide();
-    fullsize_popup_background.click(function() {
-        fullsize_popup_background.fadeOut(500, function() {
-            $("#fullsize_frame").remove();
-        }); 
-        //fullsize_popup_background.hide();
-    });
-    //Popup aligner
-    var fullsize_popup_aligner=$("<div id='fullsize_popup_aligner'></div>");
-    fullsize_popup_aligner.appendTo($("#fullsize_popup_background"));   
-    //Popup
-    var fullsize_popup=$("<div id='fullsize_popup'></div>");
-    fullsize_popup.appendTo($("#fullsize_popup_aligner"));   
-}
+
 
 function $main(){
-    drawUI();
     GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","http://cors-gate-for-the-internette.frk.wf/");
     GALLERY.getParserManager().addParser(ImageParser);
     GALLERY.getParserManager().addParser(VideoParser);
