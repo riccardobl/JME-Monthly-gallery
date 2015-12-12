@@ -7,7 +7,7 @@ ImageParser={
                 var img=matched[1];
                 
                 // Skip emoji 
-                if(img.match(/jmonkeyengine[^/]+\/(?:(?:uploads\/default)|(?:images))\/_?emoji\//)){
+                if(img.match(/(?:jmonkeyengine[^/]+\/|\/)(?:(?:uploads\/default)|(?:images))\/_?emoji\//)){
                     $debug(img, "is emoji. Skip.");
                     continue;
                 }

@@ -5,12 +5,8 @@ $import(["Settings.js"],function(){
     
     $import([
         "templates/base.html"
-    ],undefined,2);
-     $import([
-        "templates/fullscreen-view.html"
-    ],undefined,3);
+    ],initializeTemplate,2);
             
-
     $import([
         "core/Calendar.js",
         "core/ParserManager.js",
@@ -30,93 +26,10 @@ $import(["Settings.js"],function(){
 
 GALLERY=null;
 GALLERY_ELEMENTS=[];
-MONTH_OFFSET=0;
+DATE=0;
 
+CAN_LOAD_TEMPLATE=false;
 
-function queryGallery(){
-    GALLERY.get(Calendar.fromMonthOffset(MONTH_OFFSET),function( output){
-        GALLERY_ELEMENTS=output;
-        refreshPage();
-    });
-}
-
-
-function toFullScreen(element){
-    var fullscreen_view=$("#fullscreen_view");
-    element.appendTo(fullscreen_view.find("#frame"));
-    fullscreen_view.fadeIn(200); 
-    fullscreen_view.click(function(){
-        fullscreen_view.fadeOut(200,function(){
-            element.remove(); 
-        }); 
-    });
-}
-
-function refreshPage(){ 
-    loading(true);
-    
-    var choosen_date=Calendar.fromMonthOffset(MONTH_OFFSET);
-    var title=choosen_date.month+" "+choosen_date.year+" ~ Community WiP Gallery";
-    $("#title").text(title);
-    document.title = "JMonkeyEngine: "+title;
-    
-    for(var i=0;i<GALLERY_ELEMENTS.length;i++){
-        var post=GALLERY_ELEMENTS[i];          
-        for(var j=0;j<post.content.length;j++){            
-            if($arrContains(post.content[j],"exclude")){
-                $debug("Excluded");
-                continue;
-            }
-            //Creating div
-            if($startWith(post.content[j].type,"image/")){
-                var preview_container=$("<div></div>");
-                var preview_image=$("<img src='"+post.content[j].value+"'>");
-                preview_image.css({"max-width":"100%"});
-                preview_image.addClass("preview_image");
-                preview_image.appendTo(preview_container); 
-                //preview_container.css({"background-image":"url('"+post.content[j].value+"')"});
-                preview_container.addClass("preview_container");  
-                preview_container.appendTo($("#middle"));
-                preview_container.click(function() {
-                    //Video iframe
-                    var image=$('<img src="'+this+'">');
-                    toFullScreen(image);                    
-                }.bind(post.content[j].value));
-            }else if(post.content[j].type==="youtube"){
-                var preview_container=$("<div></div>");
-                preview_container.css({"background-image":"url('http://img.youtube.com/vi/"+post.content[j].value+"/hqdefault.jpg')"});
-                preview_container.addClass("preview_container");
-                preview_container.addClass("preview_image");
-                //Creating play button
-                var play_arrow=$("<img src='ytarrow.png'>");
-                play_arrow.appendTo(preview_container);
-                //play_arrow.css({"position":"absolute","left":"150px","top":"125px","width":"100px","height":"75px"});
-                play_arrow.addClass("play_arrow");
-                preview_container.appendTo($("#middle"));               
-                play_arrow.click(function() {
-                    var video=$('<iframe src="https://www.youtube.com/embed/'+this+'?autoplay=1" frameborder="0"></iframe>');
-                    toFullScreen(video);                    
-                }.bind(post.content[j].value));
-            }  
-        }
-    }
-    loading(false);
-}
-
-
-
-function $main(){
-    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","http://cors-gate-for-the-internette.frk.wf/");
-    GALLERY.getParserManager().addParser(ImageParser);
-    GALLERY.getParserManager().addParser(VideoParser);
-    GALLERY.getParserManager().addParser(YoutubeParser);
-    
-    MONTH_OFFSET=window.location.hash.substring(1);
-    queryGallery();
-   /// loading(false);
-   // refreshPage();
-    //$debug("Offset",month_offset);
-           
             /*
                 post.author                 (ex. Batman)
                 post.created_at             (ex. 2015-12-01T14:30:54.501Z)
@@ -128,5 +41,149 @@ function $main(){
                     post.content[i].vars    (ex. exclude,anothervar=possiblevalue,yesItsCsv)                   
             */
 
+
+
+function initializeTemplate(){
+    if(CAN_LOAD_TEMPLATE){
+        $("#fullscreen_view").click(hideFullScreen);
+        $("#current_date #left_arrow").click(function(){
+            loading(true);
+            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
+        });
+        $("#current_date #right_arrow").click(function(){
+            loading(true);
+            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)+1));
+
+        });
+    }else CAN_LOAD_TEMPLATE=true;
+}
+
+
+function $main(){
+    initializeTemplate();
     
+    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","http://cors-gate-for-the-internette.frk.wf/");
+    GALLERY.getParserManager().addParser(ImageParser);
+    GALLERY.getParserManager().addParser(VideoParser);
+    GALLERY.getParserManager().addParser(YoutubeParser);
+    
+    setInterval(queryJMEHub, 600000);    
+
+    var urlparts=new RegExp("([A-Z]+)([0-9]+)(?:\!([0-9]+))?",'gi').exec(window.location.hash.substring(1));
+    if(urlparts&&urlparts.length>1) setDate(Calendar.fromMonthYear(urlparts[1],urlparts[2]));
+    else setDate(Calendar.fromMonthOffset(0));
+    
+    var topic_id=urlparts[3];
+    if(typeof topic_id!=='undefined'){
+        $debug("Jump to topic",topic_id);
+        // DoJump
+    }
+
+}
+
+function drawPost(post_obj){
+    var container=$("#middle");
+    
+    var post_container=$("<div></div>");
+    post_container.addClass("post_container");
+    post_container.appendTo(container);
+    
+    var post=$("<div></div>");
+    post.addClass("post");
+    post.appendTo(post_container);
+
+    var elements_container=$("<div></div>");
+    elements_container.addClass("elements");
+    elements_container.appendTo(post);
+
+    drawElements(elements_container,post_obj.content);
+}
+
+function drawElements(container,elements){
+    for(var j=0;j<elements.length;j++){    
+        if($arrContains(elements[j].vars,"exclude")){
+            $debug("Excluded");
+            continue;
+        }
+        
+        var element_container=$("<div></div>");
+        element_container.addClass("element");
+        element_container.appendTo(container);
+
+                
+        var valigner=$("<span></span>");
+        valigner.addClass("valigner");
+        valigner.appendTo(element_container);
+
+        drawElement(element_container,elements[j]);
+
+    }
+}
+
+function drawElement(container,element){
+    if($startWith(element.type,"image/")){        
+        var image=$("<img src='"+element.value+"'>");
+        image.appendTo(container); 
+        image.click(function(){toFullScreen(image.clone()); });
+    }else if($startWith(element.type,"youtube")){
+        var video_preview=$("<div></div>");
+        video_preview.addClass("video_preview");
+        video_preview.appendTo(container);               
+        video_preview.click(function() {
+            var video=$('<iframe src="https://www.youtube.com/embed/'+element.value+'?autoplay=1" frameborder="0"></iframe>');
+            toFullScreen(video);                    
+        });
+        var preview_image=$("<img src='http://img.youtube.com/vi/"+element.value+"/hqdefault.jpg' />");
+        preview_image.appendTo(video_preview);
+        
+        //Creating play button
+        //var play_arrow=$("<img src='ytarrow.png'>");
+        //play_arrow.appendTo(video_preview);
+        //play_arrow.addClass("play_arrow");
+        //play_arrow.click(function() {
+        //    var video=$('<iframe src="https://www.youtube.com/embed/'+element.value+'?autoplay=1" frameborder="0"></iframe>');
+        //    toFullScreen(video);                    
+        //});
+    }
+}
+
+function refreshView(){ 
+    loading(true);
+    $("#current_date_text").text(DATE.month+" "+DATE.year);
+
+    $("#middle").empty();
+    
+    for(var i=0;i<GALLERY_ELEMENTS.length;i++){
+        var post=GALLERY_ELEMENTS[i];   
+        drawPost(post);
+    }
+    loading(false);
+}
+
+
+function setDate(date){
+    DATE=date;
+    window.location.hash=date.month+""+date.year;
+    queryJMEHub();
+}
+
+function queryJMEHub(){
+    $debug("Query jme hub...")
+    GALLERY.get(DATE,function( output){
+        GALLERY_ELEMENTS=output;
+        refreshView();
+    });
+}
+
+function hideFullScreen(){
+    var fullscreen_view=$("#fullscreen_view");
+    fullscreen_view.fadeOut(200,function(){
+        $("#fullscreen_view_frame").empty();
+    }); 
+}
+
+function toFullScreen(element){
+    var fullscreen_view=$("#fullscreen_view");
+    element.appendTo($("#fullscreen_view_frame"));
+    fullscreen_view.fadeIn(200); 
 }

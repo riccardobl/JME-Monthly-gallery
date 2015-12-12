@@ -28,5 +28,10 @@ Calendar={
             year: d.getFullYear()
         }
         return output;
+    },
+    toMonthOffset:function(calendar_date){
+        var today=new Date();
+        today.setMonth(today.getMonth()-Calendar._MONTHS.indexOf(calendar_date.month));
+        return today.getMonth();
     }
 }
