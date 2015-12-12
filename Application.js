@@ -140,10 +140,11 @@ function drawElement(container,element){
         var preview_image=$("<img src='' data-original='http://img.youtube.com/vi/"+element.value+"/hqdefault.jpg' />");
         preview_image.appendTo(video_preview);
         preview_image.lazyload();
-        //Creating play button
-        //var play_arrow=$("<img src='ytarrow.png'>");
-        //play_arrow.appendTo(video_preview);
-        //play_arrow.addClass("play_arrow");
+        
+        var play_arrow=$("<div></div>");
+        play_arrow.html('<i class="fa fa-play"></i>');
+        play_arrow.appendTo(video_preview);
+        play_arrow.addClass("play_arrow");
 
     }
 }
