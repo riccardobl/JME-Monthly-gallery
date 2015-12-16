@@ -1,6 +1,8 @@
 $import(["Settings.js"],function(){
     $import([
-        "style.less"
+        "style.less",
+        "//cdnjs.cloudflare.com/ajax/libs/magic/1.1.0/magic.min.css"
+
     ],undefined,1);
     
     $import([
@@ -8,17 +10,20 @@ $import(["Settings.js"],function(){
     ],initializeTemplate,2);
             
     $import([
+        "inc/function-queue.js",
         "core/Calendar.js",
         "core/ParserManager.js",
         "core/MonthlyGallery.js",
 
         "//code.jquery.com/jquery-1.11.3.min.js",
-        "//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js",
-        
+        "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js",
+
+        "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/shortcuts/inview.min.js",
+
         // Import parsers
-        "parsers/ImageParser.js",
-        "parsers/VideoParser.js",
-        "parsers/YoutubeParser.js"
+        "parsers/ImageParser.js" //,
+        //"parsers/VideoParser.js", REMOVED
+        //"parsers/YoutubeParser.js" REMOVED
 
     ],$main);
 });
@@ -56,108 +61,170 @@ function initializeTemplate(){
             setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
 
         });
+        
+
+
     }else CAN_LOAD_TEMPLATE=true;
 }
 
 
 function $main(){
+    /*
+    $(document.body).on('appear', 'section h3',function(event, els) {
+        els.each(function(el){
+            var lazy=new RegExp("^([A-Z]+)!(.*)$",'gi').exec(el.attr("lazy"));
+            $debug("Set",lazy[1],"=",lazy[2])
+            var current= el.attr(lazy[1]);
+            el.attr("lazy-old-"+lazy[1],current);
+            el.attr(lazy[1],lazy[2]);
+        });      
+    });
+    $(document.body).on('disappear', function(event, els) {
+        els.each(function(el){
+            var lazy=new RegExp("^([A-Z]+)!(.*)$",'gi').exec(el.attr("lazy"));
+            var old= el.attr("lazy-old-"+lazy[1]);
+            $debug("Set",lazy[1],"=",old);
+            el.attr(lazy[1],old);
+        });      
+    });
+    */
+    
     initializeTemplate();
     
     GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","http://cors-gate-for-the-internette.frk.wf/");
     GALLERY.getParserManager().addParser(ImageParser);
-    GALLERY.getParserManager().addParser(VideoParser);
-    GALLERY.getParserManager().addParser(YoutubeParser);
+   // GALLERY.getParserManager().addParser(VideoParser);
+    //GALLERY.getParserManager().addParser(YoutubeParser);
     
     setInterval(queryJMEHub, 600000);    
 
-    var urlparts=new RegExp("([A-Z]+)([0-9]+)(?:\!([0-9]+))?",'gi').exec(window.location.hash.substring(1));
-    if(urlparts&&urlparts.length>1) setDate(Calendar.fromMonthYear(urlparts[1],urlparts[2]));
-    else setDate(Calendar.fromMonthOffset(0));
-    
-    var topic_id=urlparts[3];
-    if(typeof topic_id!=='undefined'){
-        $debug("Jump to topic",topic_id);
-        // DoJump
-    }
-
-}
-
-function drawPost(post_obj){
-    var container=$("#middle");
-    
-    var post_container=$("<div></div>");
-    post_container.addClass("post_container");
-    post_container.appendTo(container);
-    
-    var post=$("<div></div>");
-    post.addClass("post");
-    post.appendTo(post_container);
-
-    var elements_container=$("<div></div>");
-    elements_container.addClass("elements");
-    elements_container.appendTo(post);
-
-    drawElements(elements_container,post_obj.content);
-}
-
-function drawElements(container,elements){
-    for(var j=0;j<elements.length;j++){    
-        if($arrContains(elements[j].vars,"exclude")){
-            $debug("Excluded");
-            continue;
-        }
+    var urlparts=new RegExp("([A-Z]+)([0-9]+)(?:!([0-9]+))?",'gi').exec(window.location.hash.substring(1));
+    if(urlparts&&urlparts.length>1) {
+        setDate(Calendar.fromMonthYear(urlparts[1],urlparts[2]));
         
-        var element_container=$("<div></div>");
-        element_container.addClass("element");
-        element_container.appendTo(container);
+        var topic_id=urlparts[3];
+        if(typeof topic_id!=='undefined'){
+            $debug("Jump to topic",topic_id);
+            // DoJump
+        }
 
-                
-        var valigner=$("<span></span>");
-        valigner.addClass("valigner");
-        valigner.appendTo(element_container);
-
-        drawElement(element_container,elements[j]);
-
-    }
+    }else setDate(Calendar.fromMonthOffset(0));
+    
+ 
 }
 
-function drawElement(container,element){
-    if($startWith(element.type,"image/")){        
-        var image=$("<img src='' data-original='"+element.value+"'>");
-        image.appendTo(container); 
-        image.click(function(){toFullScreen(image.clone()); });
-        image.lazyload({
-            effect : "fadeIn"
+
+
+
+function setLazy(ex,callback,unload){
+    var lazy=new RegExp("^([A-Z]+)!(.*)$",'gi').exec(ex.attr("lazy"));
+    var old= ex.attr(lazy[1]);
+    ex.attr("lazy-old-"+lazy[1],old);
+    
+    var show=function(){ 
+        if(ex.attr("lazy-visible"))return;
+        ex.hide();
+        ex.attr(lazy[1],lazy[2]);
+        ex.fadeIn(200);
+        ex.attr("lazy-visible",true);
+        if(callback) callback(true);    
+    };
+    
+    var hide=function(){
+        if(!ex.attr("lazy-visible"))return;
+        ex.attr(lazy[1],old);     
+        ex.attr("lazy-visible",false);
+        if(callback)callback(false);
+    }
+    
+    new Waypoint.Inview({
+      element: ex,
+      entered: function(direction) {
+          $fnQueue.sleep(110).enqueue(show);
+      },
+      exited: function(direction) {
+          if(unload)hide();
+      }
+    });
+}
+
+
+function elementToImage(element){
+    if(!element){
+        var image=$("<img src='img/blackmonkey.png' >");
+        image.appendTo(container);        
+    }else if($startWith(element.type,"image/")){        
+        var image=$("<img src='img/loading.gif' lazy='src!"+element.value+"'>");  
+        image.addClass("loading");
+
+        image.error(function(){
+            this.remove();
         });
-    }else if($startWith(element.type,"youtube")){
-        var video_preview=$("<div></div>");
-        video_preview.addClass("video_preview");
-        video_preview.appendTo(container);               
-        video_preview.click(function() {
+        setLazy(image,function(){
+            image.removeClass("loading");
+            image.addClass("loaded");
+        });
+       // image.addClass("post");
+       // image.appendTo(container); 
+        image.click(function(){
+            toFullScreen(image.clone());                               
+        });
+        return image;
+    }
+    /*
+    else if($startWith(element.type,"youtube")){
+     //   var video_preview=$("<div></div>");
+    //    video_preview.addClass("video_preview");
+      //  video_preview.appendTo(container);               
+       // video_preview.click(function() {
+       //     var video=$('<iframe src="https://www.youtube.com/embed/'+element.value+'?autoplay=1" frameborder="0"></iframe>');
+           // toFullScreen(video);                     
+      //  });
+        var preview_image=$("<img src='img/blackmonkey.png' lazy='src!http://img.youtube.com/vi/"+element.value+"/hqdefault.jpg' />");
+       // preview_image.appendTo(video_preview);
+        preview_image.click(function() {
             var video=$('<iframe src="https://www.youtube.com/embed/'+element.value+'?autoplay=1" frameborder="0"></iframe>');
             toFullScreen(video);                    
         });
-        var preview_image=$("<img src='' data-original='http://img.youtube.com/vi/"+element.value+"/hqdefault.jpg' />");
-        preview_image.appendTo(video_preview);
-        preview_image.lazyload();
-        
-        var play_arrow=$("<div></div>");
-        play_arrow.html('<i class="fa fa-play"></i>');
-        play_arrow.appendTo(video_preview);
-        play_arrow.addClass("play_arrow");
+        return preview_image;
 
-    }
+      //  var play_arrow=$("<div></div>");
+       // play_arrow.html('<i class="fa fa-play"></i>');
+       // play_arrow.appendTo(video_preview);
+       // play_arrow.addClass("play_arrow");
+
+    }*/
 }
 
 function refreshView(){ 
     loading(true);
     $("#current_date_text").text(DATE.month+" "+DATE.year);
 
-    $("#middle").empty();
+   // $("#middle").empty();
+    
+  
+    var container=$("#container");
+    container.empty();
+    
+    var imgs=[];
     
     for(var i=0;i<GALLERY_ELEMENTS.length;i++){
-        var post=GALLERY_ELEMENTS[i];   
-        drawPost(post);
+        var post_obj=GALLERY_ELEMENTS[i];  
+        
+        var element=post_obj.content[0];        
+        var img=elementToImage(element);
+        imgs.push(img);      
+
+        //img.addClass("post");
+        //img.appendTo(posts);
+    }
+
+    for(var i=0;i<imgs.length;i++){
+        var img=imgs[i];
+        var post=$("<div></div>");
+        post.addClass("post");
+        img.appendTo(post);
+        post.appendTo($("#container"));
     }
     loading(false);
 }
@@ -173,6 +240,7 @@ function queryJMEHub(){
     $debug("Query jme hub...")
     GALLERY.get(DATE,function( output){
         GALLERY_ELEMENTS=output;
+        if(GALLERY_ELEMENTS)GALLERY_ELEMENTS=GALLERY.shuffle(GALLERY_ELEMENTS);
         refreshView();
     });
 }

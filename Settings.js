@@ -1,3 +1,3 @@
 Settings={
-    IMAGES_PER_PAGE:7
+    ELEMENTS_PER_POST:3
 }

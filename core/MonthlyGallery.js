@@ -18,7 +18,31 @@ MonthlyGallery=function(base_url,cors_proxy){
             this._CURRENT_PAGE=1;
             callback(this._OUTPUT);
         }).bind(this);      
-    }
+    },
+    this.shuffle=function(array){ 
+        for(var i=0;i<array.length;i++){
+            var j=Math.floor(Math.random()*i);
+            var tmp=array[i];
+            array[i]=array[j];
+            array[j]=tmp;
+        }        
+        return array;
+    },
+    this.orderByScore=function(array){ // Bubblesort
+        var cnt=true;
+        while(cnt){
+            cnt=false;
+            for(var i=0;i<array.length-1;i++){
+                if(array[i].score<array[i+1].score){
+                    var tmp=array[i];
+                    array[i]=array[i+1];
+                    array[i+1]=tmp;
+                    cnt=true;
+                }
+            }
+        }
+        return array;
+    },
     this._getNextPage=function(base_url){
         var url=base_url+".json?page="+(this._CURRENT_PAGE++);
         $debug(url);
