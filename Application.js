@@ -19,9 +19,10 @@ $import(["Settings.js"],function(){
         
         // JQuery & Plugins
         "//code.jquery.com/jquery-1.11.3.min.js",
+        "inc/jquery.multi-img-viewer.js",
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js",
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/shortcuts/inview.min.js",
-        "inc/jquery.multi-img-viewer.js",
+        "inc/jquery.autohide.js",
 
         
         // Parsers
@@ -80,7 +81,7 @@ function $main(){
    // GALLERY.getParserManager().addParser(VideoParser); REMOVED
     //GALLERY.getParserManager().addParser(YoutubeParser); REMOVED
     
-    //setInterval(queryJMEHub, 600000);    REMOVED
+    setInterval(queryJMEHub, 300000);    
 
     var urlparts=new RegExp("([A-Z]+)([0-9]+)(?:!([0-9]+))?",'gi').exec(window.location.hash.substring(1));
     if(urlparts&&urlparts.length>1) {
@@ -188,7 +189,7 @@ function refreshView(){
 //    var imgs=[];
     
     var l=GALLERY_ELEMENTS.length;
-    l+=3-(l%3); // Assures that the length of the gallery is a multiple of 3
+    l+=Settings.COLUMNS-(l%Settings.COLUMNS); // Assures that the length of the gallery is a multiple of Settings.COLUMNS
     
     for(var i=0;i<l;i++){
         var post=$("<div></div>");
@@ -203,11 +204,6 @@ function refreshView(){
             bgimg.addClass("bgimg");
             bgimg.appendTo(post);
         }
-        
-     //  var bgimg=$('<canvas id="blur_canvas_'+post.post_id+'"></canvas>');
-       // bgimg.addClass("bgimg");
-       // bgimg.appendTo(post);
-
 
         var aligner=$("<span></span>");
         aligner.addClass("aligner");
@@ -226,19 +222,14 @@ function refreshView(){
         thumbnail.multiImg(imgs,400,(function(new_src){
             var post=this[0];
             var post_obj=this[1];
- 
             post.find(".bgimg").each(function(){
                 var bgimg=$(this);
                 bgimg.attr("src",new_src);
             });           
-
-
-        
         }).bind([post,post_obj]));    
         
-
-        setAutoHide(post,[thumbnail,bgimg]);
-
+        post.autohide([thumbnail,bgimg]);
+        
         //var element=post_obj.content[0]; 
         
         
@@ -265,33 +256,6 @@ function refreshView(){
     loading(false);
 }
 
-function setAutoHide(bind_to,elements){
-     new Waypoint.Inview({
-         element: bind_to,
-         enter: (function(direction) {
-             for(var i=0;i<this.length;i++){
-                 var el=this[i];
-                 if(!el)continue;
-                 var old_v=el.attr("old-display");
-                 if(old_v)el.css("display",old_v);
-             }
-
-         }).bind(elements),
-         exited: (function(direction) {
-             for(var i=0;i<this.length;i++){
-                var el=this[i];
-                if(!el)continue;
-                var old_v=el.css("display");
-                if(old_v){
-                    if(old_v==='none')continue;
-                    el.attr("old-display",old_v);
-                }
-                el.css("display","none");
-             }
-            
-         }).bind(elements)
-    });
-}
 
 
 function setDate(date){

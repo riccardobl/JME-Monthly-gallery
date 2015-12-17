@@ -149,6 +149,7 @@ body{
     position:relative;
     
     line-height: 0;
+    padding:15px;
 
 
     //  -webkit-column-count: 3;
@@ -207,17 +208,17 @@ body{
 
 
     
-     filter        : blur(20px);
-    -moz-filter   : blur(20px);
-   -webkit-filter: blur(20px);
-    -o-filter     : blur(20px);
+     filter        : blur(15px);
+    -moz-filter   : blur(15px);
+   -webkit-filter: blur(15px);
+    -o-filter     : blur(15px);
 
 }
 .post{
         display: inline-block;
     position:relative;
-    height:33vh;
-    width:33%;
+    height: ~`(100/Settings.COLUMNS)+"vh"`;
+    width: ~`(100/Settings.COLUMNS)+"%"`;
     //width:30vw;
        // max-height:100vh/3;
       //  max-width:100vw/3;
