@@ -33,7 +33,8 @@
 
 
 @posts-shadow:#000;
-@selected-post-shadow:@jme-title-color;
+@container-border-color:@jme-title-color;
+@container-shadow: @posts-shadow;
 
 @import url(https://fonts.googleapis.com/css?family=Passion+One);
 @font-face {
@@ -129,7 +130,18 @@ body{
     border-top:2px solid @bar-shadow;
 }
 
+.w-lim{
+    max-width:1110px;
+    margin:auto;
+    position:relative;
+}
+
 #container{
+    border:2px solid @container-border-color;
+    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    box-shadow: 0px 0px 7px 1px @container-shadow;
+
     text-align:center;
     width:100%;
     height:100%;
@@ -137,7 +149,9 @@ body{
     
     line-height: 0;
 
-   
+    -webkit-column-width: 150px;
+     -moz-column-width: 150px;
+          column-width: 150px;
       -webkit-column-count: 3;
       -webkit-column-gap:   0px;
       -moz-column-count:    3;
@@ -195,7 +209,7 @@ body{
     top:50%;
     left:2%;
     font-size: @title-font-size;
-    margin-top:-@title-font-size-paddig;
+    margin-top:@title-font-size-paddig;
     font-family:'FOO';
     color:@title-color;
     white-space:nowrap;

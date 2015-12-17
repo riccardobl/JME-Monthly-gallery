@@ -15,11 +15,13 @@ $import(["Settings.js"],function(){
         "core/ParserManager.js",
         "core/MonthlyGallery.js",
 
+        // JQuery & Plugins
         "//code.jquery.com/jquery-1.11.3.min.js",
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js",
-
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/shortcuts/inview.min.js",
-
+        "inc/jquery.multi-img-viewer.js",
+        
+        
         // Import parsers
         "parsers/ImageParser.js" //,
         //"parsers/VideoParser.js", REMOVED
@@ -68,27 +70,7 @@ function initializeTemplate(){
 }
 
 
-function $main(){
-    /*
-    $(document.body).on('appear', 'section h3',function(event, els) {
-        els.each(function(el){
-            var lazy=new RegExp("^([A-Z]+)!(.*)$",'gi').exec(el.attr("lazy"));
-            $debug("Set",lazy[1],"=",lazy[2])
-            var current= el.attr(lazy[1]);
-            el.attr("lazy-old-"+lazy[1],current);
-            el.attr(lazy[1],lazy[2]);
-        });      
-    });
-    $(document.body).on('disappear', function(event, els) {
-        els.each(function(el){
-            var lazy=new RegExp("^([A-Z]+)!(.*)$",'gi').exec(el.attr("lazy"));
-            var old= el.attr("lazy-old-"+lazy[1]);
-            $debug("Set",lazy[1],"=",old);
-            el.attr(lazy[1],old);
-        });      
-    });
-    */
-    
+function $main(){    
     initializeTemplate();
     
     GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","http://cors-gate-for-the-internette.frk.wf/");
@@ -115,7 +97,7 @@ function $main(){
 
 
 
-
+/*
 function setLazy(ex,callback,unload){
     var lazy=new RegExp("^([A-Z]+)!(.*)$",'gi').exec(ex.attr("lazy"));
     var old= ex.attr(lazy[1]);
@@ -146,9 +128,9 @@ function setLazy(ex,callback,unload){
           if(unload)hide();
       }
     });
-}
+}*/
 
-
+/*
 function elementToImage(element){
     if(!element){
         var image=$("<img src='img/blackmonkey.png' >");
@@ -166,9 +148,7 @@ function elementToImage(element){
         });
        // image.addClass("post");
        // image.appendTo(container); 
-        image.click(function(){
-            toFullScreen(image.clone());                               
-        });
+ c
         return image;
     }
     /*
@@ -194,38 +174,56 @@ function elementToImage(element){
        // play_arrow.addClass("play_arrow");
 
     }*/
-}
+//}*/
 
 function refreshView(){ 
     loading(true);
     $("#current_date_text").text(DATE.month+" "+DATE.year);
-
-   // $("#middle").empty();
-    
   
     var container=$("#container");
     container.empty();
     
-    var imgs=[];
+//    var imgs=[];
     
     for(var i=0;i<GALLERY_ELEMENTS.length;i++){
         var post_obj=GALLERY_ELEMENTS[i];  
-        
-        var element=post_obj.content[0];        
-        var img=elementToImage(element);
-        imgs.push(img);      
+        var post=$("<div></div>");
+        post.addClass("post");
+        post.appendTo(container);
 
+        
+        var thumbnail=$("<img src='img/loading.gif' />");
+        var imgs=[];
+        for(var j=0;j<post_obj.content.length;j++){
+            var element=post_obj.content[j];
+            imgs.push(element.value);
+        }
+        thumbnail.multiImg(imgs,400);    
+        thumbnail.appendTo(post);
+        
+        //var element=post_obj.content[0]; 
+        
+        
+        
+        //var img=elementToImage(element);
+        
+//        imgs.push(img);      
+
+        //var post=$("<div></div>");
+//        post.addClass("post");
+//        img.appendTo(post);
+//        post.appendTo($("#container"));
         //img.addClass("post");
         //img.appendTo(posts);
     }
 
-    for(var i=0;i<imgs.length;i++){
-        var img=imgs[i];
-        var post=$("<div></div>");
-        post.addClass("post");
-        img.appendTo(post);
-        post.appendTo($("#container"));
-    }
+//    for(var i=0;i<imgs.length;i++){
+//        var img=imgs[i];
+//        var post=$("<div></div>");
+//        post.addClass("post");
+//        img.appendTo(post);
+//        post.appendTo($("#container"));
+//    }
     loading(false);
 }
 
