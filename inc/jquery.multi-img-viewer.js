@@ -64,13 +64,13 @@
         if(img_id>=imgs.length)img_id=0;
         
         if(!first_loop&&img_id==old_img_id)return;
-        img.fadeOut(100,function(){
+        img.fadeOut(60,function(){
             var new_src=imgs[img_id];
             img.data("$img_id",img_id);
             img.attr("src",new_src);   
             var callback=img.data("$callback");
             if(callback)callback(new_src);
-            img.fadeIn(1000);
+            img.fadeIn(400);
            // $debug("Set new src ",imgs[img_id],"[",img_id,"]");
         });
     };

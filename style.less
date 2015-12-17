@@ -33,9 +33,13 @@
 
 
 @posts-shadow:#000;
+@posts-shadow-active:@jme-title-color;
+
 @container-border-color:@jme-title-color;
 @container-shadow: @posts-shadow;
 
+
+@bgimg-blur:6px;
 @import url(https://fonts.googleapis.com/css?family=Passion+One);
 @font-face {
     font-family: 'FOO';
@@ -149,16 +153,7 @@ body{
     position:relative;
     
     line-height: 0;
-    padding:15px;
-
-
-    //  -webkit-column-count: 3;
-   //   -webkit-column-gap:   0px;
-   //   -moz-column-count:    3;
-   //   -moz-column-gap:      0px;
-   //   column-count:         3;
-   //s   column-gap:           0px;  
-    
+    padding:@bgimg-blur;
 }
 
 .post .thumbnail.loading{
@@ -166,14 +161,6 @@ body{
     -moz-box-shadow: none!important;
     box-shadow: none!important;
 }
-
-.post :hover{
-  //  border:1px solid @selected-post-shadow;
-  ///  -webkit-box-shadow: 0px 0px 7px 1px @selected-post-shadow;
-  //  -moz-box-shadow: 0px 0px 7px 1px @selected-post-shadow;
-  //  box-shadow: 0px 0px 7px 1px @selected-post-shadow;
-}
-
 .post .aligner{
     display: inline-block;
     height: 100%;
@@ -186,26 +173,24 @@ body{
     -webkit-box-shadow: 0px 0px 7px 1px @posts-shadow;
     -moz-box-shadow: 0px 0px 7px 1px @posts-shadow;
     box-shadow: 0px 0px 7px 1px @posts-shadow;
-    transition: transform .5s,box-shadow .5s,-moz-box-shadow .5s,-wekbit-box-shadow .5s;
+    transition: z-index .2s,transform .2s,box-shadow .2s,-moz-box-shadow .2s,-wekbit-box-shadow .2s;
     z-index:2;
     max-width:96%;
     max-height:96%;
     position:relative;
     margin:auto;
-    //top:0;
-   // left:0;
+
     display:inline-block;
-        vertical-align: middle;
+    vertical-align: middle;
 }
 
 
 .post .thumbnail:hover {
-    position:relative;
     z-index:4;
-    -webkit-box-shadow: 0px 0px 70px 10px @posts-shadow;
-    -moz-box-shadow: 0px 0px 70px 10px @posts-shadow;
-    box-shadow: 0px 0px 70px 10px @posts-shadow;
-    transform: scale(1.3,1.3);
+    -webkit-box-shadow: 0px 0px 7px 1px @posts-shadow-active;
+    -moz-box-shadow: 0px 0px 7px 1px @posts-shadow-active;
+    box-shadow: 0px 0px 7px 1px @posts-shadow-active;
+    transform: scale(1.1,1.1);
 }
 
 .post .bgimg{
@@ -215,28 +200,19 @@ body{
     left:0;
     width:100%;
     height:100%;
-        display:block;
-
-
+    display:block;    
     
-     filter        : blur(15px);
-    -moz-filter   : blur(15px);
-   -webkit-filter: blur(15px);
-    -o-filter     : blur(15px);
+    filter        : blur(@bgimg-blur);
+    -moz-filter   : blur(@bgimg-blur);
+    -webkit-filter: blur(@bgimg-blur);
+    -o-filter     : blur(@bgimg-blur);
 
 }
 .post{
-        display: inline-block;
+    display: inline-block;
     position:relative;
     height: ~`(100/Settings.COLUMNS)+"vh"`;
     width: ~`(100/Settings.COLUMNS)+"%"`;
-    //width:30vw;
-       // max-height:100vh/3;
-      //  max-width:100vw/3;
-
-   // margin:0;
-   // padding:0;
-  //  display:inline-block;
 }
 
 

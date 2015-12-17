@@ -23,6 +23,16 @@ ParserManager=function(){
             o_obj.score=post.score;
             o_obj.url=base_url+""+post.topic_id+"/"+(i+1);
             o_obj.post_id=post.id;
+            o_obj.likes=0;
+            
+            // Get likes
+            for(var j=0;j<post.actions_summary.length;j++){
+                if(post.actions_summary[j].id===2){
+                    o_obj.likes=post.actions_summary[j].count;
+                    break;
+                }
+            }
+            
         }  
      //   this._orderByScore(output);
         return output;
