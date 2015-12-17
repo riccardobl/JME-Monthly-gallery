@@ -77,10 +77,10 @@ function $main(){
     
     GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","//cors-gate-for-the-internette.frk.wf/");
     GALLERY.getParserManager().addParser(ImageParser);
-   // GALLERY.getParserManager().addParser(VideoParser);
-    //GALLERY.getParserManager().addParser(YoutubeParser);
+   // GALLERY.getParserManager().addParser(VideoParser); REMOVED
+    //GALLERY.getParserManager().addParser(YoutubeParser); REMOVED
     
-    setInterval(queryJMEHub, 600000);    
+    //setInterval(queryJMEHub, 600000);    REMOVED
 
     var urlparts=new RegExp("([A-Z]+)([0-9]+)(?:!([0-9]+))?",'gi').exec(window.location.hash.substring(1));
     if(urlparts&&urlparts.length>1) {
@@ -187,12 +187,17 @@ function refreshView(){
     
 //    var imgs=[];
     
-    for(var i=0;i<GALLERY_ELEMENTS.length;i++){
-        var post_obj=GALLERY_ELEMENTS[i];  
+    var l=GALLERY_ELEMENTS.length;
+    l+=3-(l%3); // Assures that the length of the gallery is a multiple of 3
+    
+    for(var i=0;i<l;i++){
         var post=$("<div></div>");
         post.addClass("post");
         post.appendTo(container);
 
+        var post_obj=GALLERY_ELEMENTS[i];  
+        if(!post_obj)continue;
+        
         if(Modernizr.cssfilters){
             var bgimg=$("<img id='blur_img_"+post_obj.post_id+"' />");
             bgimg.addClass("bgimg");
