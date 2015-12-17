@@ -186,10 +186,7 @@ function refreshView(){
     var container=$("#container");
     container.empty();
     
-//    var imgs=[];
-    
     var l=GALLERY_ELEMENTS.length;
-    l+=Settings.COLUMNS-(l%Settings.COLUMNS); // Assures that the length of the gallery is a multiple of Settings.COLUMNS
     for(var i=0;i<l;i++){
         var post=$("<div></div>");
         post.addClass("post");
@@ -210,6 +207,7 @@ function refreshView(){
         
         var thumbnail=$("<img id='thumbnail_"+post_obj.post_id+"' src='img/loading.gif' />");
         thumbnail.addClass("thumbnail");       
+        thumbnail.addClass("loading");
         
         var imgs=[];
         for(var j=0;j<post_obj.content.length;j++){
@@ -221,37 +219,32 @@ function refreshView(){
         thumbnail.multiImg(imgs,400,(function(new_src){
             var post=this[0];
             var post_obj=this[1];
+            
+            post.find(".thumbnail").each(function(){
+                $(this).removeClass("loading");
+            }); 
             post.find(".bgimg").each(function(){
                 var bgimg=$(this);
                 bgimg.attr("src",new_src);
             });           
-        }).bind([post,post_obj]));    
-        
+        }).bind([post,post_obj]));            
         post.autohide([thumbnail,bgimg]);
         
-        //var element=post_obj.content[0]; 
         
-        
-        
-        //var img=elementToImage(element);
-        
-//        imgs.push(img);      
+        var infobox=$("<div class='infobox'></div>");
+        infobox.appendTo(post);
 
-        //var post=$("<div></div>");
-//        post.addClass("post");
-//        img.appendTo(post);
-//        post.appendTo($("#container"));
-        //img.addClass("post");
-        //img.appendTo(posts);
+        var author=$("<div class='author'></div>");
+        author.html("<span>"+post_obj.author+"</span>");
+        author.appendTo(infobox);
+        
+        var likes=$("<div class='likes'></div>");
+        likes.html("<span>"+post_obj.likes+"</span><img src='img/banana.svg' />");
+        likes.appendTo(infobox);
+
     }
 
-//    for(var i=0;i<imgs.length;i++){
-//        var img=imgs[i];
-//        var post=$("<div></div>");
-//        post.addClass("post");
-//        img.appendTo(post);
-//        post.appendTo($("#container"));
-//    }
+
     loading(false);
 }
 

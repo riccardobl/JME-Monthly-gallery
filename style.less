@@ -168,6 +168,38 @@ body{
 }
 
 
+.post .infobox{
+    transition: opacity .2s;
+
+    position:absolute;
+    top:45%;
+    width:100%;
+    z-index:10;
+    font-size:2.5vh;
+    pointer-events: none;
+    font-family:"Passion One";
+    color:#fff;
+    text-shadow:0 0 1vh #000;
+    opacity:0;
+}
+
+
+.post .author{
+    width:100%;
+    text-align:center;
+}
+
+.post .likes{
+    margin-top:5%;
+    width:100%;
+    text-align:center;
+}
+
+.post .likes img{
+    height:4vh;
+    margin-bottom:-1.5vh;
+}
+
 .post .thumbnail{
     border:none;
     -webkit-box-shadow: 0px 0px 7px 1px @posts-shadow;
@@ -185,7 +217,7 @@ body{
 }
 
 
-.post .thumbnail:hover {
+.post:hover .thumbnail {
     z-index:4;
     -webkit-box-shadow: 0px 0px 7px 1px @posts-shadow-active;
     -moz-box-shadow: 0px 0px 7px 1px @posts-shadow-active;
@@ -193,6 +225,10 @@ body{
     transform: scale(1.1,1.1);
 }
 
+.post:hover .infobox {
+    opacity:1;
+}
+    
 .post .bgimg{
     z-index:1;
     position:absolute;
@@ -207,6 +243,10 @@ body{
     -webkit-filter: blur(@bgimg-blur);
     -o-filter     : blur(@bgimg-blur);
 
+}
+
+.post img{
+    border-radius:8px;
 }
 .post{
     display: inline-block;
