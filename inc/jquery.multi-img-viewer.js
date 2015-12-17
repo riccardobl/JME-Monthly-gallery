@@ -1,4 +1,5 @@
 (function ( $ ) { 
+    
     $.fn.multiImg = function(images,delay,callback) {
         this.filter("img").each(function(){
             var img=$(this);
@@ -8,7 +9,15 @@
             img.data("$firstLoop",true);
             img.data("$passed_time",0);
             img.data("$callback",callback);
+            img.on("DOMNodeRemoved",function(){
+               for(var i=0;i<$.fn.multiImg._queue.length;i++){
+                   if($.fn.multiImg._queue[i]===img){
+                                         debug("Remove ",i);
 
+                        break;
+                   }
+               } 
+            });
             $.fn.multiImg._queue.push(img);
         });
         return this;
@@ -16,9 +25,23 @@
     $.fn.multiImg._queue=[];
     $.fn.multiImg._queue_id=0;
     $.fn.multiImg._loop=function(){
-        if($.fn.multiImg._queue.length==0)return;    
-        var img=$.fn.multiImg._queue[$.fn.multiImg._queue_id++];                
-        if($.fn.multiImg._queue_id>=$.fn.multiImg._queue.length)$.fn.multiImg._queue_id=0;
+ 
+        var finding=true;
+        var img;
+        
+        while(finding){
+            if($.fn.multiImg._queue.length==0)return;    
+            img=$.fn.multiImg._queue[$.fn.multiImg._queue_id];         
+            if(img&&document.contains(img[0])){
+                finding=false;
+            }else{
+                 $.fn.multiImg._queue.splice($.fn.multiImg._queue_id,1);
+            }
+        
+            $.fn.multiImg._queue_id++;
+            if($.fn.multiImg._queue_id>=$.fn.multiImg._queue.length)$.fn.multiImg._queue_id=0;
+        }
+        
             
         var first_loop=img.data("$firstLoop");
         
@@ -48,7 +71,7 @@
             var callback=img.data("$callback");
             if(callback)callback(new_src);
             img.fadeIn(1000);
-            $debug("Set new src ",imgs[img_id],"[",img_id,"]");
+           // $debug("Set new src ",imgs[img_id],"[",img_id,"]");
         });
     };
     setInterval($.fn.multiImg._loop,200);

@@ -75,7 +75,7 @@ function initializeTemplate(){
 function $main(){    
     initializeTemplate();
     
-    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","http://cors-gate-for-the-internette.frk.wf/");
+    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","//cors-gate-for-the-internette.frk.wf/");
     GALLERY.getParserManager().addParser(ImageParser);
    // GALLERY.getParserManager().addParser(VideoParser);
     //GALLERY.getParserManager().addParser(YoutubeParser);
@@ -221,13 +221,11 @@ function refreshView(){
         thumbnail.multiImg(imgs,400,(function(new_src){
             var post=this[0];
             var post_obj=this[1];
-
  
             post.find(".bgimg").each(function(){
                 var bgimg=$(this);
                 bgimg.attr("src",new_src);
-            });
-            
+            });           
 
 
         
