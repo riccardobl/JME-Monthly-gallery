@@ -15,12 +15,13 @@ $import(["Settings.js"],function(){
         "core/ParserManager.js",
         "core/MonthlyGallery.js",
 
+        
         // JQuery & Plugins
         "//code.jquery.com/jquery-1.11.3.min.js",
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js",
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/shortcuts/inview.min.js",
         "inc/jquery.multi-img-viewer.js",
-        
+
         
         // Import parsers
         "parsers/ImageParser.js" //,
@@ -191,15 +192,45 @@ function refreshView(){
         post.addClass("post");
         post.appendTo(container);
 
+     //   if(Modernizr.cssfilters){
+            var bgimg=$("<img id='blur_img_"+post_obj.post_id+"' />");
+            bgimg.addClass("bgimg");
+            bgimg.appendTo(post);
+      //  }
         
-        var thumbnail=$("<img src='img/loading.gif' />");
+     //  var bgimg=$('<canvas id="blur_canvas_'+post.post_id+'"></canvas>');
+       // bgimg.addClass("bgimg");
+       // bgimg.appendTo(post);
+
+
+        var aligner=$("<span></span>");
+        aligner.addClass("aligner");
+        aligner.appendTo(post);
+        
+        var thumbnail=$("<img id='thumbnail_"+post_obj.post_id+"' src='img/loading.gif' />");
+        thumbnail.addClass("thumbnail");       
+
         var imgs=[];
         for(var j=0;j<post_obj.content.length;j++){
             var element=post_obj.content[j];
             imgs.push(element.value);
         }
-        thumbnail.multiImg(imgs,400);    
         thumbnail.appendTo(post);
+
+        thumbnail.multiImg(imgs,600,(function(new_src){
+            var post=this[0];
+            var post_obj=this[1];
+
+ 
+            post.find(".bgimg").each(function(){
+                var bgimg=$(this);
+                bgimg.attr("src",new_src);
+            });
+            
+
+
+        
+        }).bind([post,post_obj]));    
         
         //var element=post_obj.content[0]; 
         

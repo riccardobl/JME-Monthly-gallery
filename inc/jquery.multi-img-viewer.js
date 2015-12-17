@@ -1,5 +1,5 @@
 (function ( $ ) { 
-    $.fn.multiImg = function(images,delay) {
+    $.fn.multiImg = function(images,delay,callback) {
         this.filter("img").each(function(){
             var img=$(this);
             img.data("$img_id",0);
@@ -7,6 +7,8 @@
             img.data("$delay",delay);
             img.data("$firstLoop",true);
             img.data("$passed_time",0);
+            img.data("$callback",callback);
+
             $.fn.multiImg._queue.push(img);
         });
         return this;
@@ -40,9 +42,12 @@
         
         if(!first_loop&&img_id==old_img_id)return;
         img.fadeOut(100,function(){
+            var new_src=imgs[img_id];
             img.data("$img_id",img_id);
-            img.attr("src",imgs[img_id]);   
-            img.fadeIn(200);
+            img.attr("src",new_src);   
+            var callback=img.data("$callback");
+            if(callback)callback(new_src);
+            img.fadeIn(1000);
             $debug("Set new src ",imgs[img_id],"[",img_id,"]");
         });
     };
