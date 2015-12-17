@@ -51,5 +51,5 @@
             $debug("Set new src ",imgs[img_id],"[",img_id,"]");
         });
     };
-    setInterval($.fn.multiImg._loop,100);
+    setInterval($.fn.multiImg._loop,200);
 }( jQuery ));

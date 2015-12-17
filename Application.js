@@ -15,6 +15,7 @@ $import(["Settings.js"],function(){
         "core/ParserManager.js",
         "core/MonthlyGallery.js",
 
+        "inc/tp/modernizr-custom.js",
         
         // JQuery & Plugins
         "//code.jquery.com/jquery-1.11.3.min.js",
@@ -23,7 +24,7 @@ $import(["Settings.js"],function(){
         "inc/jquery.multi-img-viewer.js",
 
         
-        // Import parsers
+        // Parsers
         "parsers/ImageParser.js" //,
         //"parsers/VideoParser.js", REMOVED
         //"parsers/YoutubeParser.js" REMOVED
@@ -192,11 +193,11 @@ function refreshView(){
         post.addClass("post");
         post.appendTo(container);
 
-     //   if(Modernizr.cssfilters){
+        if(Modernizr.cssfilters){
             var bgimg=$("<img id='blur_img_"+post_obj.post_id+"' />");
             bgimg.addClass("bgimg");
             bgimg.appendTo(post);
-      //  }
+        }
         
      //  var bgimg=$('<canvas id="blur_canvas_'+post.post_id+'"></canvas>');
        // bgimg.addClass("bgimg");
@@ -209,7 +210,7 @@ function refreshView(){
         
         var thumbnail=$("<img id='thumbnail_"+post_obj.post_id+"' src='img/loading.gif' />");
         thumbnail.addClass("thumbnail");       
-
+        
         var imgs=[];
         for(var j=0;j<post_obj.content.length;j++){
             var element=post_obj.content[j];
@@ -217,7 +218,7 @@ function refreshView(){
         }
         thumbnail.appendTo(post);
 
-        thumbnail.multiImg(imgs,600,(function(new_src){
+        thumbnail.multiImg(imgs,400,(function(new_src){
             var post=this[0];
             var post_obj=this[1];
 
@@ -232,6 +233,9 @@ function refreshView(){
         
         }).bind([post,post_obj]));    
         
+
+        setAutoHide(post,[thumbnail,bgimg]);
+
         //var element=post_obj.content[0]; 
         
         
@@ -256,6 +260,34 @@ function refreshView(){
 //        post.appendTo($("#container"));
 //    }
     loading(false);
+}
+
+function setAutoHide(bind_to,elements){
+     new Waypoint.Inview({
+         element: bind_to,
+         enter: (function(direction) {
+             for(var i=0;i<this.length;i++){
+                 var el=this[i];
+                 if(!el)continue;
+                 var old_v=el.attr("old-display");
+                 if(old_v)el.css("display",old_v);
+             }
+
+         }).bind(elements),
+         exited: (function(direction) {
+             for(var i=0;i<this.length;i++){
+                var el=this[i];
+                if(!el)continue;
+                var old_v=el.css("display");
+                if(old_v){
+                    if(old_v==='none')continue;
+                    el.attr("old-display",old_v);
+                }
+                el.css("display","none");
+             }
+            
+         }).bind(elements)
+    });
 }
 
 
