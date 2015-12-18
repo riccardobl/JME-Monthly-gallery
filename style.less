@@ -14,6 +14,10 @@
 @title-font-size:30px;
 @title-font-size-paddig: 15px;
 
+@text-color:rgb(30,30,30);
+@text-font-size:20px;
+@text-font-size-paddig: 13px;
+
 @date-bar-bg:@jme-title-color;
 @date-bar-shadow:@bar-shadow;
 @date-bar-fg:@bar-bg;
@@ -141,6 +145,24 @@ body{
     position:relative;
 }
 
+.title_text {
+    display:inline;
+    font-size: @title-font-size;
+    margin-top:@title-font-size-paddig;
+    font-family:'FOO';
+    color:@title-color;
+    white-space:nowrap;
+}
+
+.text {
+    display:inline;
+    font-size: @text-font-size;
+    margin-top:@text-font-size-paddig;
+    font-family:'FOO';
+    color:@text-color;
+    white-space:nowrap;    
+}
+
 #posts_container{
     border:2px solid @container-border-color;
     -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
@@ -156,6 +178,37 @@ body{
     padding:@bgimg-blur;
 }
 
+.content_container {
+    text-align: center;  
+    display:inline-block;
+    margin:2%;
+    //border:.1px solid @container-border-color; 
+    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    box-shadow: 0px 0px 7px 1px @container-shadow;
+    width:45%;
+    height:45%;
+}
+
+/*#description_container {
+    margin:auto;
+    display:inline-block;
+    border:2px solid @container-border-color;    
+    width: 45%;
+    height: 95%;
+    margin
+}*/
+
+.posts_preview {
+    margin:auto;
+    display:block;
+    max-width:90%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    box-shadow: 0px 0px 7px 1px @container-shadow;
+}
 
 #thumbnail_container{
     border:2px solid @container-border-color;
@@ -177,6 +230,7 @@ body{
     -moz-box-shadow: none!important;
     box-shadow: none!important;
 }
+
 .post .aligner{
     display: inline-block;
     height: 100%;

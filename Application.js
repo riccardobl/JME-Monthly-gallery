@@ -230,23 +230,43 @@ function closePost(do_not_edit_url){
     $("#thumbnail_container").fadeIn(200);
 }
 
+            /*
+                post.author                 (ex. Batman)
+                post.created_at             (ex. 2015-12-01T14:30:54.501Z)
+                post.updated_at             (ex. 2015-12-01T14:30:54.501Z)
+                post.url                    (ex. http://jmonkeyengine/t/XYZ/XYZ)
+                post.content[]      
+                    post.content[i].type    (ex. image/png)       
+                    post.content[i].value   (ex. http://imagehosting/img.png)
+                    post.content[i].vars    (ex. exclude,anothervar=possiblevalue,yesItsCsv)                   
+            */
+
 function openPost(post_obj){
     setURLVars({
         post_id:post_obj.post_id+""
     });
     closePost(true);
     var container=$("#posts_container");
+    var image_container=$("<div id='image_container' class='content_container'></div>");
+    var description_container=$("<div id='description_container' class='content_container'></div>");
+    image_container.appendTo(container);
+    description_container.appendTo(container);
     $("#thumbnail_container").fadeOut(200,function(){
         var elements=post_obj.content;
+        //Author title
+        var author_title=$("<div class='title_text'>Author:</div>)");
+        author_title.appendTo(description_container);
+        //Author text
+        var author_text=$("<div class='text'>"+post_obj.author+"</div>)");
+        author_text.appendTo(description_container);
         for(var i=0;i<elements.length;i++){
             var img=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
-            img.addClass("wip_img");
+            img.addClass("posts_preview");
             img.attr("src",elements[i].value);
-            img.appendTo(container);        
+            img.appendTo(image_container);        
             img.click(function(){
                 //Fix me
-              if($(this).requestFullScreen) $(this).requestFullScreen();
-                
+              if($(this).requestFullScreen) $(this).requestFullScreen();                
             });
         }
         container.fadeIn(200);
