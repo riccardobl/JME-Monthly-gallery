@@ -11,16 +11,15 @@
 @title-font-size-paddig: 15px;
 @posts-shadow:#000;
 
-<<<<<<< HEAD
-@text-color:rgb(30,30,30);
+@text-color:rgb(200,200,200);
 @text-font-size:20px;
 @text-font-size-paddig: 13px;
+@text-border:rgb(20,20,20);
 
-=======
 @container-border-color:@jme-title-color;
 @container-shadow: @posts-shadow;
 @title-color:@jme-title-color;
->>>>>>> 7d1a9cb5b99b85a9eef519af5c445f241ee9fa72
+
 @date-bar-bg:@jme-title-color;
 @date-bar-shadow:@bar-shadow;
 @date-bar-fg:@bar-bg;
@@ -150,7 +149,7 @@ body{
 .title_text {
     display:inline;
     font-size: @title-font-size;
-    margin-top:@title-font-size-paddig;
+    //margin-top:@title-font-size-paddig;
     font-family:'FOO';
     color:@title-color;
     white-space:nowrap;
@@ -158,6 +157,7 @@ body{
 
 .text {
     display:inline;
+    text-shadow:.1px .1px 8px @text-border;
     font-size: @text-font-size;
     margin-top:@text-font-size-paddig;
     font-family:'FOO';
@@ -174,7 +174,7 @@ body{
     -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     box-shadow: 0px 0px 7px 1px @container-shadow;
     width:100%;
-    height:100%;      
+    min-height:100%;      
 
     position:relative;
     
@@ -184,12 +184,14 @@ body{
     text-align: center;  
     display:inline-block;
     margin:2%;
+    margin-left:2.5%;
+    margin-right:2.5%;
     //border:.1px solid @container-border-color; 
     -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
     -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     box-shadow: 0px 0px 7px 1px @container-shadow;
     width:45%;
-    height:45%;
+    height:85%;
 }
 
 /*#description_container {
