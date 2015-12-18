@@ -2,7 +2,7 @@ MonthlyGallery=function(base_url,cors_proxy){
     this._CURRENT_PAGE=1;
     this._PARSER_MANAGER=new ParserManager();
     this._BASE_URL=base_url;
-    this._CORS_PROXY=cors_proxy;
+    this._GATEWAY=cors_proxy;
     this._CALLBACK;
     this._OUTPUT=[];
     this.getParserManager=function(){
@@ -46,13 +46,15 @@ MonthlyGallery=function(base_url,cors_proxy){
     this._getNextPage=function(base_url){
         var url=base_url+".json?page="+(this._CURRENT_PAGE++);
         $debug(url);
-        $http((this._CORS_PROXY?this._CORS_PROXY:"")+url,(function(status,content){
+        
+        this._GATEWAY.traverse(url, (function(status,content){
             if(status){
                  var output=this._PARSER_MANAGER.parse(this._BASE_URL,content);
                  this._OUTPUT=this._OUTPUT.concat(output);
                  this._getNextPage(base_url);
             }else this._CALLBACK();
-        }).bind(this));       
+        }).bind(this));
+                
     }
 }
 

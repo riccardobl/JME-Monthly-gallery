@@ -1,7 +1,6 @@
 $import(["Settings.js"],function(){
     $import([
         "style.less",
-        "//cdnjs.cloudflare.com/ajax/libs/magic/1.1.0/magic.min.css"
 
     ],undefined,1);
     
@@ -10,6 +9,9 @@ $import(["Settings.js"],function(){
     ],initializeTemplate,2);
             
     $import([
+        "gateways/DirectGate.js",
+        "gateways/CorsGateForTheInternette.js",
+
         "inc/function-queue.js",
         "core/Calendar.js",
         "core/ParserManager.js",
@@ -22,9 +24,9 @@ $import(["Settings.js"],function(){
         "inc/jquery.multi-img-viewer.js",
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js",
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/shortcuts/inview.min.js",
+        "//gist.githubusercontent.com/johan/2128691/raw/b81d1b59fd98091a1a2c8814f77660a10a9b0e16/jquery.fullscreen.js",
         "inc/jquery.autohide.js",
 
-        
         // Parsers
         "parsers/ImageParser.js" //,
         //"parsers/VideoParser.js", REMOVED
@@ -37,6 +39,7 @@ $import(["Settings.js"],function(){
 
 GALLERY=null;
 GALLERY_ELEMENTS=[];
+IMAGES_GATEWAY=null;
 DATE=0;
 
 CAN_LOAD_TEMPLATE=false;
@@ -56,15 +59,16 @@ CAN_LOAD_TEMPLATE=false;
 
 function initializeTemplate(){
     if(CAN_LOAD_TEMPLATE){
-        $("#fullscreen_view").click(hideFullScreen);
+   //     $("#fullscreen_view").click(hideFullScreen);
         $("#current_date #left_arrow").click(function(){
+            closePost();
             loading(true);
             setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)+1));
         });
         $("#current_date #right_arrow").click(function(){
+            closePost();
             loading(true);
             setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
-
         });
         
 
@@ -76,115 +80,50 @@ function initializeTemplate(){
 function $main(){    
     initializeTemplate();
     
-    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/","//cors-gate-for-the-internette.frk.wf/");
+    IMAGES_GATEWAY=new DirectGate();        
+    
+    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/",new CorsGateForTheInternette());
     GALLERY.getParserManager().addParser(ImageParser);
    // GALLERY.getParserManager().addParser(VideoParser); REMOVED
     //GALLERY.getParserManager().addParser(YoutubeParser); REMOVED
     
-    setInterval(queryJMEHub, 300000);    
+  //  setInterval(queryJMEHub, 300000);    
 
+    var vars=getURLVars();    
+    if(vars.month&&vars.year){//urlparts&&urlparts.length>1) {
+        setDate(Calendar.fromMonthYear(vars.month,vars.year));   
+    }else setDate(Calendar.fromMonthOffset(0)); 
+}
+
+function getURLVars(){
     var urlparts=new RegExp("([A-Z]+)([0-9]+)(?:!([0-9]+))?",'gi').exec(window.location.hash.substring(1));
-    if(urlparts&&urlparts.length>1) {
-        setDate(Calendar.fromMonthYear(urlparts[1],urlparts[2]));
-        
-        var topic_id=urlparts[3];
-        if(typeof topic_id!=='undefined'){
-            $debug("Jump to topic",topic_id);
-            // DoJump
-        }
-
-    }else setDate(Calendar.fromMonthOffset(0));
-    
- 
+    if(!urlparts)return {};
+    return {
+        month:urlparts[1],
+        year:urlparts[2],
+        post_id: urlparts[3]
+    }
 }
 
 
-
-/*
-function setLazy(ex,callback,unload){
-    var lazy=new RegExp("^([A-Z]+)!(.*)$",'gi').exec(ex.attr("lazy"));
-    var old= ex.attr(lazy[1]);
-    ex.attr("lazy-old-"+lazy[1],old);
-    
-    var show=function(){ 
-        if(ex.attr("lazy-visible"))return;
-        ex.hide();
-        ex.attr(lazy[1],lazy[2]);
-        ex.fadeIn(200);
-        ex.attr("lazy-visible",true);
-        if(callback) callback(true);    
-    };
-    
-    var hide=function(){
-        if(!ex.attr("lazy-visible"))return;
-        ex.attr(lazy[1],old);     
-        ex.attr("lazy-visible",false);
-        if(callback)callback(false);
+function setURLVars(data){
+    var current_vars=getURLVars();
+    var keys=Object.keys(data);
+    for(var i=0;i<keys.length;i++){
+        current_vars[keys[i]]=data[keys[i]];
     }
-    
-    new Waypoint.Inview({
-      element: ex,
-      entered: function(direction) {
-          $fnQueue.sleep(110).enqueue(show);
-      },
-      exited: function(direction) {
-          if(unload)hide();
-      }
-    });
-}*/
-
-/*
-function elementToImage(element){
-    if(!element){
-        var image=$("<img src='img/blackmonkey.png' >");
-        image.appendTo(container);        
-    }else if($startWith(element.type,"image/")){        
-        var image=$("<img src='img/loading.gif' lazy='src!"+element.value+"'>");  
-        image.addClass("loading");
-
-        image.error(function(){
-            this.remove();
-        });
-        setLazy(image,function(){
-            image.removeClass("loading");
-            image.addClass("loaded");
-        });
-       // image.addClass("post");
-       // image.appendTo(container); 
- c
-        return image;
-    }
-    /*
-    else if($startWith(element.type,"youtube")){
-     //   var video_preview=$("<div></div>");
-    //    video_preview.addClass("video_preview");
-      //  video_preview.appendTo(container);               
-       // video_preview.click(function() {
-       //     var video=$('<iframe src="https://www.youtube.com/embed/'+element.value+'?autoplay=1" frameborder="0"></iframe>');
-           // toFullScreen(video);                     
-      //  });
-        var preview_image=$("<img src='img/blackmonkey.png' lazy='src!http://img.youtube.com/vi/"+element.value+"/hqdefault.jpg' />");
-       // preview_image.appendTo(video_preview);
-        preview_image.click(function() {
-            var video=$('<iframe src="https://www.youtube.com/embed/'+element.value+'?autoplay=1" frameborder="0"></iframe>');
-            toFullScreen(video);                    
-        });
-        return preview_image;
-
-      //  var play_arrow=$("<div></div>");
-       // play_arrow.html('<i class="fa fa-play"></i>');
-       // play_arrow.appendTo(video_preview);
-       // play_arrow.addClass("play_arrow");
-
-    }*/
-//}*/
+    window.location.hash=current_vars.month+current_vars.year+(current_vars.post_id?"!"+current_vars.post_id:"");
+}
 
 function refreshView(){ 
     loading(true);
     $("#current_date_text").text(DATE.month+" "+DATE.year);
   
-    var container=$("#container");
+    var container=$("#thumbnail_container");
     container.empty();
+    
+    var jump_to_post=undefined;
+    var vars=getURLVars();
     
     var l=GALLERY_ELEMENTS.length;
     for(var i=0;i<l;i++){
@@ -194,6 +133,12 @@ function refreshView(){
 
         var post_obj=GALLERY_ELEMENTS[i];  
         if(!post_obj)continue;
+        
+        if(typeof vars.post_id!=='undefined'){
+            if(post_obj.post_id==vars.post_id){
+                jump_to_post=post_obj;
+            }
+        }
         
         if(Modernizr.cssfilters){
             var bgimg=$("<img id='blur_img_"+post_obj.post_id+"' />");
@@ -212,6 +157,7 @@ function refreshView(){
         var imgs=[];
         for(var j=0;j<post_obj.content.length;j++){
             var element=post_obj.content[j];
+            element.value=IMAGES_GATEWAY.rewriteUrl(element.value);
             imgs.push(element.value);
         }
         thumbnail.appendTo(post);
@@ -219,18 +165,16 @@ function refreshView(){
         thumbnail.multiImg(imgs,400,(function(new_src){
             var post=this[0];
             var post_obj=this[1];
-            
             post.find(".thumbnail").each(function(){
                 $(this).removeClass("loading");
             }); 
             post.find(".bgimg").each(function(){
                 var bgimg=$(this);
                 bgimg.attr("src",new_src);
+
             });           
         }).bind([post,post_obj]));            
-        post.autohide([thumbnail,bgimg]);
-        
-        
+            
         var infobox=$("<div class='infobox'></div>");
         infobox.appendTo(post);
 
@@ -241,9 +185,15 @@ function refreshView(){
         var likes=$("<div class='likes'></div>");
         likes.html("<span>"+post_obj.likes+"</span><img src='img/banana.svg' />");
         likes.appendTo(infobox);
+        
+        post.click((function(){
+            openPost(this);
+        }).bind(post_obj));
 
     }
-
+    if(jump_to_post){
+        openPost(jump_to_post);
+    }
 
     loading(false);
 }
@@ -252,7 +202,10 @@ function refreshView(){
 
 function setDate(date){
     DATE=date;
-    window.location.hash=date.month+""+date.year;
+    setURLVars({
+        month:date.month+"",
+        year: date.year+""
+    });
     queryJMEHub();
 }
 
@@ -265,15 +218,42 @@ function queryJMEHub(){
     });
 }
 
-function hideFullScreen(){
-    var fullscreen_view=$("#fullscreen_view");
-    fullscreen_view.fadeOut(200,function(){
-        $("#fullscreen_view_frame").empty();
-    }); 
+function closePost(do_not_edit_url){
+    if(!do_not_edit_url){
+        setURLVars({
+            post_id:undefined
+        });
+    }
+    var container=$("#posts_container");
+    container.empty();
+    container.fadeOut(200);
+    $("#thumbnail_container").fadeIn(200);
 }
 
-function toFullScreen(element){
-    var fullscreen_view=$("#fullscreen_view");
-    element.appendTo($("#fullscreen_view_frame"));
-    fullscreen_view.fadeIn(200); 
+function openPost(post_obj){
+    setURLVars({
+        post_id:post_obj.post_id+""
+    });
+    closePost(true);
+    var container=$("#posts_container");
+    $("#thumbnail_container").fadeOut(200,function(){
+        var elements=post_obj.content;
+        for(var i=0;i<elements.length;i++){
+            var img=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
+            img.addClass("wip_img");
+            img.attr("src",elements[i].value);
+            img.appendTo(container);        
+            img.click(function(){
+                //Fix me
+              if($(this).requestFullScreen) $(this).requestFullScreen();
+                
+            });
+        }
+        container.fadeIn(200);
+    });
+    $(document).keyup(function(e) {
+     if (e.keyCode == 27) {
+        closePost();
+        }
+    });
 }
