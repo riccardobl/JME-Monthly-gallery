@@ -277,7 +277,9 @@ function openPost(post_obj){
     closePost(true);
     var container=$("#posts_container");
     var image_container=$("<div id='image_container' class='content_container'></div>");
+    image_container.css({"float":"left"});
     var description_container=$("<div id='description_container' class='content_container'></div>");
+    description_container.css({"float":"right"});
     image_container.appendTo(container);
     description_container.appendTo(container);
     $("#thumbnail_container").fadeOut(200,function(){
