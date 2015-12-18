@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8"> 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
+        <title>JMonkeyEngine Community ~ Monthly WiP Gallery</title>
         <style> 
             #loading{
                 width:100%;
@@ -18,10 +18,18 @@
                 background-color:rgba(0,0,0,0.8);
                 font-size:90px;
                 font-size:20vmin;
-                color: #444;
+                color: rgb(243,200,2);
                 text-shadow:0px 0px 8px #000;
                 text-shadow:0px 0px 2vmin #000;
             }
+            
+            #loading img{
+                max-width:90px;
+                max-width:20vmin;
+                max-height:90px;
+                max-height:20vmin;
+            }
+            
             #loading div{
                 display:table-cell;
                 vertical-align: middle;
@@ -49,10 +57,10 @@
     </head>   
     
     <body>
-        <div id="loading"><div><i class="fa fa-refresh fa-spin"></i></div></div>      
+        <div id="loading"><div><img src='img/banana.svg' class="fa fa-spin" /></div></div>      
         <div class="github-fork-ribbon-wrapper right" style="position:fixed" >
             <div class="github-fork-ribbon" >
-                <a>This is a WiP </a>
+                <a><i class="fa fa-wrench"></i> Under development</a>
             </div>
         </div>
     </body>
