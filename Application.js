@@ -71,6 +71,29 @@ function initializeTemplate(){
             setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
         });
         
+        $http("https://api.github.com/repos/riccardobl/JME-Monthly-gallery/contributors",function(status,content){
+            if(status){
+                var contributors=[];
+                var parsed_content=JSON.parse(content);
+                for(var i=0;i<parsed_content.length;i++){
+                    var username=parsed_content[i].login;
+                    if(username==="riccardobl")continue;
+                    var link=parsed_content[i].html_url;
+                    $http("https://api.github.com/users/"+username,(function(status,content){
+                        if(status){
+                            var parsed_content=JSON.parse(content);
+                            var name=parsed_content.name;
+                            if(name===null){
+                                name=parsed_content.login;
+                            }
+                            var link=this;
+                            var dom_el=$("<a href='"+link+"' target='_blank'>"+name+"</a>");
+                            $("#contributors").append(dom_el);
+                        }
+                    }).bind(link));
+                }
+            }
+        });
 
 
     }else CAN_LOAD_TEMPLATE=true;
@@ -78,6 +101,12 @@ function initializeTemplate(){
 
 
 function $main(){    
+    if($_debug.enable){
+        var firebug = document.createElement("script");
+        firebug.type = "text/javascript";
+        firebug.src = "//getfirebug.com/firebug-lite.js#startOpened=false,enableTrace";
+        document.body.appendChild(firebug);
+    }
     initializeTemplate();
     
     IMAGES_GATEWAY=new DirectGate();        
