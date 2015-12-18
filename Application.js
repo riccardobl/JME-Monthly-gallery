@@ -276,10 +276,12 @@ function openPost(post_obj){
     });
     closePost(true);
     var container=$("#posts_container");
-    var image_container=$("<div id='image_container' class='content_container'></div>");
-    image_container.css({"float":"left"});
-    var description_container=$("<div id='description_container' class='content_container'></div>");
-    description_container.css({"float":"right"});
+    var image_container=$("<div></div>");
+    image_container.addClass("content_container left");
+    var description_container=$("<div></div>");
+    description_container.addClass("content_container right");
+    var post_clearer=$("<div></div>");
+    post_clearer.css({"clear":"both"});
     image_container.appendTo(container);
     description_container.appendTo(container);
     $("#thumbnail_container").fadeOut(200,function(){
