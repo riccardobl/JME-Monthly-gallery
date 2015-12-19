@@ -106,12 +106,6 @@ function $main(){
     $debug("Release: ",$is_release);
     $_debug.enable=!$is_release;
     
-    if($_debug.enable){
-        var firebug = document.createElement("script");
-        firebug.type = "text/javascript";
-        firebug.src = "//getfirebug.com/firebug-lite.js#startOpened=false,enableTrace";
-        document.body.appendChild(firebug);
-    }
     initializeTemplate();
     
     IMAGES_GATEWAY=new DirectGate();        
