@@ -6,53 +6,61 @@ default_expiration: "30d"
 
 handlers:
 - url: /(.*\.(css|less))
-  mime_type: text/css
-  static_files: /\1
-  upload: /(.*\.(css|less))
+  http_headers:
+    content_type: text/css
+  static_files: \1
+  upload: (.*\.(css|less))
 
 - url: /(.*\.html)
-  mime_type: text/html
-  static_files: /\1
-  upload: /(.*\.html)
+  http_headers:
+    content_type: text/html
+  static_files: \1
+  upload: (.*\.html)
 
 - url: /(.*\.js)
-  mime_type: text/javascript
-  static_files: /\1
-  upload: /(.*\.js)
+  http_headers:
+    content_type: text/javascript
+  static_files: \1
+  upload: (.*\.js)
 
 - url: /(.*\.ttf)
-  mime_type: application/x-font-ttf
-  static_files: /\1
-  upload: /(.*\.ttf)    
+  http_headers:
+    content_type: application/x-font-ttf
+  static_files: \1
+  upload: (.*\.ttf)    
     
 - url: /(.*\.woff)
-  mime_type: application/x-woff
-  static_files: /\1
-  upload: /(.*\.woff)  
+  http_headers:
+    content_type: application/x-woff
+  static_files: \1
+  upload: (.*\.woff)  
     
-- url: /(.*\.(svg|svgz))
-  mime_type: images/svg+xml
-  static_files: /\1
-  upload: /(.*\.(svg|svgz))
+- url: /(.*\.svg)
+  http_headers:
+    content_type: images/svg+xml
+  static_files: \1
+  upload: (.*\.(svg))
 
 - url: /(.*\.(png))
-  mime_type: image/png
-  static_files: /\1
-  upload: /(.*\.(png))
+  http_headers:
+    content_type: image/png
+  static_files: \1
+  upload: (.*\.(png))
   
 - url: /(.*\.txt)
-  mime_type: text/plain
-  static_files: /\1
-  upload: /(.*\.txt) 
+  http_headers:
+    content_type: text/plain
+  static_files: \1
+  upload: (.*\.txt) 
   
 - url: /(.+)/
-  static_files: /\1/index.html
-  upload: /(.+)/index.html
+  static_files: \1/index.html
+  upload: (.+)/index.html
   
 - url: /(.+)
-  static_files: /\1/index.html
-  upload: /(.+)/index.html  
+  static_files: \1/index.html
+  upload: (.+)/index.html  
   
 - url: /
-  static_files: /index.html
-  upload: /index.html
+  static_files: index.html
+  upload: index.html
