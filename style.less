@@ -122,6 +122,7 @@ body{
 
 #bottom{ 
     &:extend(.bar);
+    height:@bar-size*2;
     position:static;
     bottom:0;
     border-top:2px solid @bar-shadow;
@@ -176,8 +177,7 @@ body{
     -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     box-shadow: 0px 0px 7px 1px @container-shadow;
     width:100%;
-    min-height: @window-height - @bar-size - @bar-size - @date-bar-size;      
-
+    min-height: @window-height - @bar-size - @date-bar-size;      
     position:relative;
     
 }
