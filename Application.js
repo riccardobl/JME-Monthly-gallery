@@ -276,18 +276,32 @@ function openPost(post_obj){
     });
     closePost(true);
     var container=$("#posts_container");
-    var image_container=$("<div id='image_container' class='content_container'></div>");
-    var description_container=$("<div id='description_container' class='content_container'></div>");
+    var image_container=$("<div></div>");
+    image_container.addClass("content_container left");
+    var description_container=$("<div></div>");
+    description_container.addClass("content_container right");
+    var post_clearer=$("<div></div>");
+    post_clearer.css({"clear":"both"});
     image_container.appendTo(container);
     description_container.appendTo(container);
     $("#thumbnail_container").fadeOut(200,function(){
         var elements=post_obj.content;
-        //Author title
+        //Titles title
         var author_title=$("<div class='title_text'>Author:</div>)");
-        author_title.appendTo(description_container);
+        var date_title=$("<div class='title_text'>Posted on:</div>)");
+        var message_title=$("<div class='title_text'>Original message:</div>)");
         //Author text
         var author_text=$("<div class='text'>"+post_obj.author+"</div>)");
+        var date_text=$("<div class='text'>"+post_obj.created_at+"</div>)");
+        var message_text=$("<div class='text'>"+post_obj.message+"</div>)");
+        message_text.find("img").remove();
+        //Appending elements
+        author_title.appendTo(description_container);
         author_text.appendTo(description_container);
+        date_title.appendTo(description_container);
+        date_text.appendTo(description_container);
+        message_title.appendTo(description_container);
+        message_text.appendTo(description_container);
         for(var i=0;i<elements.length;i++){
             var img=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
             img.addClass("posts_preview");

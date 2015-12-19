@@ -24,7 +24,7 @@ ParserManager=function(){
             o_obj.url=base_url+""+post.topic_id+"/"+(i+1);
             o_obj.post_id=post.id;
             o_obj.likes=0;
-            
+            o_obj.message=post.cooked;
             // Get likes
             for(var j=0;j<post.actions_summary.length;j++){
                 if(post.actions_summary[j].id===2){
