@@ -11,6 +11,7 @@ $import(["Settings.js"],function(){
     $import([
         "gateways/DirectGate.js",
         "gateways/CorsGateForTheInternette.js",
+        "gateways/EmbeddedCORSGate.js",
 
         "inc/function-queue.js",
         "core/Calendar.js",
@@ -99,8 +100,12 @@ function initializeTemplate(){
     }else CAN_LOAD_TEMPLATE=true;
 }
 
-
-function $main(){    
+$is_release=false;
+function $main(){ 
+    $is_release=document.domain==="release.jme-monthly-gallery.frk.wf"
+    $debug("Release: ",$is_release);
+    $_debug.enable=!$is_release;
+    
     if($_debug.enable){
         var firebug = document.createElement("script");
         firebug.type = "text/javascript";
@@ -111,7 +116,7 @@ function $main(){
     
     IMAGES_GATEWAY=new DirectGate();        
     
-    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/",new CorsGateForTheInternette());
+    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/",$is_release?new EmbeddedCORSGate():new CorsGateForTheInternette());
     GALLERY.getParserManager().addParser(ImageParser);
    // GALLERY.getParserManager().addParser(VideoParser); REMOVED
     //GALLERY.getParserManager().addParser(YoutubeParser); REMOVED

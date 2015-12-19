@@ -5,6 +5,9 @@ api_version: 1
 default_expiration: "30d"
 
 handlers:
+- url: /embedded_corsproxy($|\/.*$)
+  script: embedded_corsproxy/php/index.php
+
 - url: /(.*\.(css|less))
   http_headers:
     content_type: text/css
