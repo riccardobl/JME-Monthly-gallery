@@ -1,0 +1,58 @@
+application: jmewipmonthlygallery
+version: 1
+runtime: php55
+api_version: 1
+default_expiration: "30d"
+
+handlers:
+- url: /(.*\.(css|less))
+  mime_type: text/css
+  static_files: /\1
+  upload: /(.*\.(css|less))
+
+- url: /(.*\.html)
+  mime_type: text/html
+  static_files: /\1
+  upload: /(.*\.html)
+
+- url: /(.*\.js)
+  mime_type: text/javascript
+  static_files: /\1
+  upload: /(.*\.js)
+
+- url: /(.*\.ttf)
+  mime_type: application/x-font-ttf
+  static_files: /\1
+  upload: /(.*\.ttf)    
+    
+- url: /(.*\.woff)
+  mime_type: application/x-woff
+  static_files: /\1
+  upload: /(.*\.woff)  
+    
+- url: /(.*\.(svg|svgz))
+  mime_type: images/svg+xml
+  static_files: /\1
+  upload: /(.*\.(svg|svgz))
+
+- url: /(.*\.(png))
+  mime_type: image/png
+  static_files: /\1
+  upload: /(.*\.(png))
+  
+- url: /(.*\.txt)
+  mime_type: text/plain
+  static_files: /\1
+  upload: /(.*\.txt) 
+  
+- url: /(.+)/
+  static_files: /\1/index.html
+  upload: /(.+)/index.html
+  
+- url: /(.+)
+  static_files: /\1/index.html
+  upload: /(.+)/index.html  
+  
+- url: /
+  static_files: /index.html
+  upload: /index.html
