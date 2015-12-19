@@ -16,6 +16,12 @@
 @text-font-size-paddig: 13px;
 @text-border:rgb(20,20,20);
 
+@link-text-color:rgb(200,200,250);
+@link-text-border:rgb(20,20,50);
+
+@visited-link-text-color:rgb(250,100,100);
+@visited-link-text-border:rgb(150,20,20);
+
 @container-border-color:@jme-title-color;
 @container-shadow: @posts-shadow;
 @title-color:@jme-title-color;
@@ -40,6 +46,24 @@
 
 @import url(https://fonts.googleapis.com/css?family=Passion+One);
 @import url(https://fonts.googleapis.com/css?family=Chango);
+
+p { 
+    margin:0; 
+    padding:0;
+    display:inline;
+}
+
+a:link {
+    &:extend(.text);
+    color:@link-text-color;
+    text-shadow:.1px .1px 8px @link-text-border;
+}
+
+a:visited {
+    &:extend(.text);
+    color:@visited-link-text-color;
+    text-shadow:.1px .1px 8px @visited-link-text-border;
+}
 
 body{
     -webkit-touch-callout: none;
@@ -162,7 +186,7 @@ body{
     text-shadow:.1px .1px 8px @text-border;
     font-size: @text-font-size;
     margin-top:@text-font-size-paddig;
-    font-family:'PAssion One';
+    font-family:'Passion One';
     color:@text-color;
     //white-space:nowrap;    
 }

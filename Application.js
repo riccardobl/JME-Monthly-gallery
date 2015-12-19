@@ -283,6 +283,7 @@ function openPost(post_obj){
     post_clearer.css({"clear":"both"});
     image_container.appendTo(container);
     description_container.appendTo(container);
+    post_clearer.appendTo(container);
     $("#thumbnail_container").fadeOut(200,function(){
         var elements=post_obj.content;
         //Titles title
@@ -292,7 +293,8 @@ function openPost(post_obj){
         //Author text
         var author_text=$("<div class='text'>"+post_obj.author+"</div>)");
         var date_text=$("<div class='text'>"+post_obj.created_at+"</div>)");
-        var message_text=$("<div class='text'>"+post_obj.message+"</div>)");
+        var message_text=$("<div class='text'>"+post_obj.message.substring(0,100).trim()+"...</div>)");
+        var original_post_link=$("<a href='"+post_obj.url+"'>continue reading</a>");
         message_text.find("img").remove();
         //Appending elements
         author_title.appendTo(description_container);
@@ -301,6 +303,7 @@ function openPost(post_obj){
         date_text.appendTo(description_container);
         message_title.appendTo(description_container);
         message_text.appendTo(description_container);
+        original_post_link.appendTo(description_container);
         for(var i=0;i<elements.length;i++){
             var img=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
             img.addClass("posts_preview");
