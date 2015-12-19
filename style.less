@@ -73,8 +73,10 @@ body{
     margin:0;
     padding:0;
     background-color:@bg;
-    
+
     font-family:'Passion One';
+    color:@text-color;
+
     position:absolute;
     height: 100%;
     width:100%;
@@ -145,30 +147,59 @@ body{
 
 #bottom{ 
     &:extend(.bar);
+    height:auto;
     position:static;
     bottom:0;
     border-top:2px solid @bar-shadow;
+ 
+}
+
+#bottom #fork,#bottom #bug{
+    font-size:@bar-size/2.3;
+    position:absolute;
+    right:0;
 }
 
 #bottom #fork{
-    font-size:@bar-size/1.2;
-    position:absolute;
-    width:100%;
-    height:100%;
+    top:10px;
+}
 
+#bottom #bug{
+
+    bottom:10px;
+}
+
+#bottom  .w-limit{
 }
 
 #bottom #copyright{
+        padding-bottom:20px;
+       padding-top:20px;
+
     font-size:@bar-size/4;
-    position:absolute;
-    width:100%;
-    height:100%;
+
+
 }
+
+#bottom  a{
+    color: @text-color;
+    text-decoration: none;
+}
+
+#bottom a :visited{
+    color: @text-color;
+}
+
+#bottom  a :hover{
+    color: @text-color;
+}
+
 
 .w-lim{
     max-width:1110px;
     margin:auto;
     position:relative;
+    height:100%;
 }
 
 .title_text {
@@ -198,8 +229,7 @@ p,a{
     -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     box-shadow: 0px 0px 7px 1px @container-shadow;
     width:100%;
-    min-height: @window-height - @bar-size - @bar-size - @date-bar-size;      
-
+    min-height: @window-height - @bar-size - @date-bar-size;      
     position:relative;
     
 }
@@ -370,7 +400,7 @@ p,a{
     top:50%;
     left:2%;
     font-size: @title-font-size;
-    margin-top:@title-font-size-paddig;
+    margin-top:-@title-font-size-paddig;
     font-family:'Chango';
     color:@title-color;
     white-space:nowrap;

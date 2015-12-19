@@ -1,3 +1,4 @@
 .directory 
 bfg*.jar
 fonts/foo.ttf
+*bfg-report*
