@@ -1,12 +1,15 @@
 <?php
+    if(!isset($_REQUEST["target"]))die("CORS Proxy");
+
+
     $_ALLOWED_TARGETS=array(
         "/^https?:\/\/hub.jmonkeyengine.org($|\/.*)$/i"
     );
     
+
     $target=$_REQUEST["target"];
     $target=preg_replace("/^(https?)(?:\:\/\/|!)(.+)$/i","$1://$2",$target);
     
-    if(!isset($target))die("CORS Proxy");
     
     $allowed=false;
     
