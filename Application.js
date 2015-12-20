@@ -258,9 +258,9 @@ function openPost(post_obj){
     closePost(true);
     var container=$("#post");
     var image_container=$("<div></div>");
-    image_container.addClass("content_container left");
+    image_container.addClass("container left");
     var description_container=$("<div></div>");
-    description_container.addClass("content_container right");
+    description_container.addClass("container right");
     var post_clearer=$("<div></div>");
     post_clearer.css({"clear":"both"});
     image_container.appendTo(container);
@@ -275,8 +275,9 @@ function openPost(post_obj){
         //Author text
         var author_text=$("<div class='text'>"+post_obj.author+"</div>)");
         var date_text=$("<div class='text'>"+post_obj.created_at+"</div>)");
-        var message_text=$("<div class='text'>"+post_obj.message.substring(0,100).trim()+"...</div>)");
+        var message_text=$("<div class='text'>"+post_obj.message.substring(0,300).trim()+"<p>...</p></div>)");
         var original_post_link=$("<a href='"+post_obj.url+"'>continue reading</a>");
+        message_text.find("a").remove();
         message_text.find("img").remove();
         //Appending elements
         author_title.appendTo(description_container);
