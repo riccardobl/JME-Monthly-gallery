@@ -308,9 +308,12 @@ function openPost(post_obj){
         message_text.appendTo(description_container);
         original_post_link.appendTo(description_container);
         for(var i=0;i<elements.length;i++){
-            var img=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
+            var img=$("<div></div>");
+            var pic=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
             img.addClass("posts_preview");
-            img.attr("src",elements[i].value);
+            //pic.addClass("posts_preview");
+            pic.appendTo(img);
+            pic.attr("src",elements[i].value);
             img.appendTo(image_container);        
             img.click(function(){
                 //Fix me
