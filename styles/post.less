@@ -1,0 +1,74 @@
+@import "styles/variables.less";
+
+
+.title_text {
+    display:block;
+    font-size: @title-font-size;
+    //margin-top:@title-font-size-paddig;
+    font-family:'Chango';
+    color:@title-color;
+    //white-space:nowrap;
+}
+
+.text {
+    display:inline;
+    text-shadow:.1px .1px 8px @text-shadow;
+    font-size: @text-font-size;
+    margin-top:@text-font-size-paddig;
+    font-family:'Passion One';
+    //white-space:nowrap;    
+}
+
+
+
+#post .container {
+    border:none;
+    text-align: center;  
+    display:inline-block;
+    padding:1%;
+    margin:1%;
+    margin-top:3%;
+    //margin-left:2.5%;
+    //margin-right:2.5%;
+    //border:.1px solid @container-border-color; 
+    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    box-shadow: 0px 0px 7px 1px @container-shadow;
+    min-height:0px;
+    width:45%;
+    height:85%;
+}
+
+#post .container:last-child{
+    margin-right:1.75%;
+    //margin-left:0%;
+    float:right;
+}
+
+#post .container:first-child{
+    //margin-right:0%;
+    margin-left:1.75%;
+    float:left;
+}
+
+/*#description_container {
+    margin:auto;
+    display:inline-block;
+    border:2px solid @container-border-color;    
+    width: 45%;
+    height: 95%;
+    margin
+}*/
+
+.posts_preview {
+    margin:auto;
+    display:block;
+    max-width:90%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    box-shadow: 0px 0px 7px 1px @container-shadow;
+
+}
+

@@ -1,8 +1,9 @@
 $import(["Settings.js"],function(){
     $import([
         "styles/fonts.less",
-        "styles/content.less",
-        "styles/structure.less"
+        "styles/structure.less",
+        "styles/thumbnails.less",
+        "styles/post.less"
     ],undefined,1);
             
     $import([
@@ -33,6 +34,7 @@ $import(["Settings.js"],function(){
     ],$main);
 });
 
+$IS_RELEASED=document.domain==="release.jme-monthly-gallery.frk.wf";
 
 
 GALLERY=null;
@@ -40,132 +42,98 @@ GALLERY_ELEMENTS=[];
 IMAGES_GATEWAY=null;
 DATE=0;
 
-CAN_LOAD_TEMPLATE=false;
-
-            /*
-                post.author                 (ex. Batman)
-                post.created_at             (ex. 2015-12-01T14:30:54.501Z)
-                post.updated_at             (ex. 2015-12-01T14:30:54.501Z)
-                post.url                    (ex. http://jmonkeyengine/t/XYZ/XYZ)
-                post.content[]      
-                    post.content[i].type    (ex. image/png)       
-                    post.content[i].value   (ex. http://imagehosting/img.png)
-                    post.content[i].vars    (ex. exclude,anothervar=possiblevalue,yesItsCsv)                   
-            */
-
-
-
 function initializeTemplate(){
-    if(CAN_LOAD_TEMPLATE){
-        $("#current_date #left_arrow").click(function(){
-            if($(this).hasClass("disabled"))return;
-            closePost();
-            loading(true);
-            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)+1)); 
-        });
-        $("#current_date #right_arrow").click(function(){
-            if($(this).hasClass("disabled"))return;
-            closePost();
-            loading(true);
-            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
-        });
-        
-        $http("https://api.github.com/repos/riccardobl/JME-Monthly-gallery/contributors",function(status,content){
-            if(status){
-                var contributors=[];
-                var parsed_content=JSON.parse(content);
-                for(var i=0;i<parsed_content.length;i++){
-                    var username=parsed_content[i].login;
-                    if(username==="riccardobl")continue;
-                    var link=parsed_content[i].html_url;
-                    $http("https://api.github.com/users/"+username,(function(status,content){
-                        if(status){
-                            var parsed_content=JSON.parse(content);
-                            var name=parsed_content.name;
-                            if(name===null){
-                                name=parsed_content.login;
-                            }
-                            var link=this;
-                            var dom_el=$("<a href='"+link+"' target='_blank'>"+name+"</a>");
-                            $("#contributors").append(dom_el);
-                        }
-                    }).bind(link));
-                }
-            }
-        });
-
-
-    }else CAN_LOAD_TEMPLATE=true;
+      
 }
 
-$is_release=false;
-function $main(){ 
-    $is_release=document.domain==="release.jme-monthly-gallery.frk.wf"
-    $debug("Release: ",$is_release);
-    $_debug.enable=!$is_release;
+function $main(){     
+    $_debug.enable=!$IS_RELEASED;
     
-    initializeTemplate();
+
+    // Init template
+    $("#current_date #left_arrow").click(function(){
+        if($(this).hasClass("disabled"))return;
+        closePost();
+        loading(true);
+        setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)+1)); 
+    });
+    $("#current_date #right_arrow").click(function(){
+        if($(this).hasClass("disabled"))return;
+        closePost();
+        loading(true);
+        setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
+    });        
+    $http("https://api.github.com/repos/riccardobl/JME-Monthly-gallery/contributors",function(status,content){
+        if(status){
+            var contributors=[];
+            var parsed_content=JSON.parse(content);
+            for(var i=0;i<parsed_content.length;i++){
+                var username=parsed_content[i].login;
+                if(username==="riccardobl")continue;
+                var link=parsed_content[i].html_url;
+                $http("https://api.github.com/users/"+username,(function(status,content){
+                    if(status){
+                        var parsed_content=JSON.parse(content);
+                        var name=parsed_content.name;
+                        if(name===null){
+                            name=parsed_content.login;
+                        }
+                        var link=this;
+                        var dom_el=$("<a href='"+link+"' target='_blank'>"+name+"</a>");
+                        $("#contributors").append(dom_el);
+                    }
+                }).bind(link));
+            }
+        }
+    });
     
-    IMAGES_GATEWAY=new DirectGate();        
     
-    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/",$is_release?new EmbeddedCORSGate():new CorsGateForTheInternette());
+    // Init gallery    
+    IMAGES_GATEWAY=new DirectGate();      
+    GALLERY=new MonthlyGallery("http://hub.jmonkeyengine.org/t/",$IS_RELEASED?new EmbeddedCORSGate():new CorsGateForTheInternette());
     GALLERY.getParserManager().addParser(ImageParser);
    // GALLERY.getParserManager().addParser(VideoParser); REMOVED
     //GALLERY.getParserManager().addParser(YoutubeParser); REMOVED
     
-  //  setInterval(queryJMEHub, 300000);    
+    var vars=URI();    
+    setDate(vars.month&&vars.year?Calendar.fromMonthYear(vars.month,vars.year):Calendar.fromMonthOffset(0));   
 
-    var vars=getURLVars();    
-    if(vars.month&&vars.year){//urlparts&&urlparts.length>1) {
-        setDate(Calendar.fromMonthYear(vars.month,vars.year));   
-    }else setDate(Calendar.fromMonthOffset(0)); 
 }
 
-function getURLVars(){
-    var urlparts=new RegExp("([A-Z]+)([0-9]+)(?:!([0-9]+))?",'gi').exec(window.location.hash.substring(1));
-    if(!urlparts)return {};
-    return {
-        month:urlparts[1],
-        year:urlparts[2],
-        post_id: urlparts[3]
+function URI(data){
+    if(!data){    
+        var hashes=window.location.hash.substring(1);
+        var urlparts=new RegExp("([A-Z]+)([0-9]+)(?:!([0-9]+))?",'gi').exec(hashes);
+        if(!urlparts)return {};
+        return {
+            month:urlparts[1],
+            year:urlparts[2],
+            post_id: urlparts[3]
+        }
+    }else{
+        var current_vars=URI();
+        var keys=Object.keys(data);
+        for(var i=0;i<keys.length;i++){
+            current_vars[keys[i]]=data[keys[i]];
+        }
+        window.location.hash=current_vars.month+current_vars.year+(current_vars.post_id?"!"+current_vars.post_id:"");
     }
 }
 
 
-function setURLVars(data){
-    var current_vars=getURLVars();
-    var keys=Object.keys(data);
-    for(var i=0;i<keys.length;i++){
-        current_vars[keys[i]]=data[keys[i]];
-    }
-    window.location.hash=current_vars.month+current_vars.year+(current_vars.post_id?"!"+current_vars.post_id:"");
-}
-
-function refreshView(){ 
-    loading(true);
-    $("#current_date_text").text(DATE.month+" "+DATE.year);
-  
-    var container=$("#thumbnail_container");
+function refreshThumbnailsView(){    
+    var container=$("#thumbnails");
     container.empty();
     
-    var jump_to_post=undefined;
-    var vars=getURLVars();
-    
-    var l=GALLERY_ELEMENTS.length;
+    var l=GALLERY_ELEMENTS.length;    
     for(var i=0;i<l;i++){
         var post=$("<div></div>");
-        post.addClass("post");
+        post.addClass("thumbnail_container");
         post.appendTo(container);
 
         var post_obj=GALLERY_ELEMENTS[i];  
         if(!post_obj)continue;
-        
-        if(typeof vars.post_id!=='undefined'){
-            if(post_obj.post_id==vars.post_id){
-                jump_to_post=post_obj;
-            }
-        }
-        
+              
         if(Modernizr.cssfilters){
             var bgimg=$("<img id='blur_img_"+post_obj.post_id+"' />");
             bgimg.addClass("bgimg");
@@ -217,18 +185,33 @@ function refreshView(){
         }).bind(post_obj));
 
     }
-    if(jump_to_post){
-        openPost(jump_to_post);
-    }
+}
 
+function refreshPostView(){    
+    var vars=URI();
+    var l=GALLERY_ELEMENTS.length;    
+    for(var i=0;i<l;i++){
+        var post_obj=GALLERY_ELEMENTS[i];  
+        if(typeof vars.post_id!=='undefined'){
+            if(post_obj.post_id==vars.post_id){
+                openPost(post_obj);
+                return true;
+            }
+        }
+    }    
+    return false;
+}
+
+function refreshView(){ 
+    loading(true);
+    $("#current_date_text").text(DATE.month+" "+DATE.year);
+    if(!refreshPostView()) refreshThumbnailsView(); 
     loading(false);
 }
 
-
-
 function setDate(date){
     DATE=date;
-    setURLVars({
+    URI({
         month:date.month+"",
         year: date.year+""
     });
@@ -250,44 +233,35 @@ function queryJMEHub(){
 }
 
 function closePost(do_not_edit_url){
-    if(!do_not_edit_url){
-        setURLVars({
-            post_id:undefined
-        });
-    }
-    var container=$("#posts_container");
+    var container=$("#post");
     container.empty();
     container.fadeOut(200);
-    $("#thumbnail_container").fadeIn(200);
+    $("#thumbnails").fadeIn(200);
+    
+    if(!do_not_edit_url){
+        URI({
+            post_id:undefined
+        });
+        refreshView();
+    }
+
 }
 
-            /*
-                post.author                 (ex. Batman)
-                post.created_at             (ex. 2015-12-01T14:30:54.501Z)
-                post.updated_at             (ex. 2015-12-01T14:30:54.501Z)
-                post.url                    (ex. http://jmonkeyengine/t/XYZ/XYZ)
-                post.content[]      
-                    post.content[i].type    (ex. image/png)       
-                    post.content[i].value   (ex. http://imagehosting/img.png)
-                    post.content[i].vars    (ex. exclude,anothervar=possiblevalue,yesItsCsv)                   
-            */
 
 function openPost(post_obj){
-    setURLVars({
-        post_id:post_obj.post_id+""
-    });
+    URI({post_id:post_obj.post_id+""});
     closePost(true);
-    var container=$("#posts_container");
+    var container=$("#post");
     var image_container=$("<div></div>");
-    image_container.addClass("content_container left");
+    image_container.addClass("container left");
     var description_container=$("<div></div>");
-    description_container.addClass("content_container right");
+    description_container.addClass("container right");
     var post_clearer=$("<div></div>");
     post_clearer.css({"clear":"both"});
     image_container.appendTo(container);
     description_container.appendTo(container);
     post_clearer.appendTo(container);
-    $("#thumbnail_container").fadeOut(200,function(){
+    $("#thumbnails").fadeOut(200,function(){
         var elements=post_obj.content;
         //Titles title
         var author_title=$("<div class='title_text'>Author:</div>)");
@@ -296,8 +270,9 @@ function openPost(post_obj){
         //Author text
         var author_text=$("<div class='text'>"+post_obj.author+"</div>)");
         var date_text=$("<div class='text'>"+post_obj.created_at+"</div>)");
-        var message_text=$("<div class='text'>"+post_obj.message.substring(0,100).trim()+"...</div>)");
+        var message_text=$("<div class='text'>"+post_obj.message.substring(0,300).trim()+"<p>...</p></div>)");
         var original_post_link=$("<a href='"+post_obj.url+"'>continue reading</a>");
+        message_text.find("a").remove();
         message_text.find("img").remove();
         //Appending elements
         author_title.appendTo(description_container);
@@ -308,12 +283,9 @@ function openPost(post_obj){
         message_text.appendTo(description_container);
         original_post_link.appendTo(description_container);
         for(var i=0;i<elements.length;i++){
-            var img=$("<div></div>");
-            var pic=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
+            var img=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
             img.addClass("posts_preview");
-            //pic.addClass("posts_preview");
-            pic.appendTo(img);
-            pic.attr("src",elements[i].value);
+            img.attr("src",elements[i].value);
             img.appendTo(image_container);        
             img.click(function(){
                 //Fix me
@@ -324,7 +296,7 @@ function openPost(post_obj){
     });
     $(document).keyup(function(e) {
      if (e.keyCode == 27) {
-        closePost();
+            closePost();
         }
     });
 }
