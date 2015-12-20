@@ -24,6 +24,8 @@ $import(["Settings.js"],function(){
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js",
         "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/shortcuts/inview.min.js",
         "//gist.githubusercontent.com/johan/2128691/raw/b81d1b59fd98091a1a2c8814f77660a10a9b0e16/jquery.fullscreen.js",
+        "//raw.githubusercontent.com/iamceege/tooltipster/28fa8412cc1ae89de13c0d4d9fa30e1874e9d397/js/jquery.tooltipster.min.js",
+        "//raw.githubusercontent.com/iamceege/tooltipster/28fa8412cc1ae89de13c0d4d9fa30e1874e9d397/css/tooltipster.css",
         "inc/jquery.autohide.js",
 
         // Parsers
@@ -42,15 +44,13 @@ GALLERY_ELEMENTS=[];
 IMAGES_GATEWAY=null;
 DATE=0;
 
-function initializeTemplate(){
-      
-}
 
 function $main(){     
     $_debug.enable=!$IS_RELEASED;
     
 
     // Init template
+    $('.tooltip').tooltipster();
     $("#current_date #left_arrow").click(function(){
         if($(this).hasClass("disabled"))return;
         closePost();
@@ -113,9 +113,7 @@ function URI(data){
     }else{
         var current_vars=URI();
         var keys=Object.keys(data);
-        for(var i=0;i<keys.length;i++){
-            current_vars[keys[i]]=data[keys[i]];
-        }
+        for(var i=0;i<keys.length;i++)current_vars[keys[i]]=data[keys[i]];
         window.location.hash=current_vars.month+current_vars.year+(current_vars.post_id?"!"+current_vars.post_id:"");
     }
 }
@@ -242,13 +240,20 @@ function closePost(do_not_edit_url){
         URI({
             post_id:undefined
         });
+        scrollTop();
         refreshView();
     }
 
 }
 
 
+function scrollTop(){
+    $("body").scrollTop(0);
+}
+
+
 function openPost(post_obj){
+    scrollTop();
     URI({post_id:post_obj.post_id+""});
     closePost(true);
     var container=$("#post");
@@ -288,7 +293,16 @@ function openPost(post_obj){
             img.appendTo(image_container);        
             img.click(function(){
                 //Fix me
-              if($(this).requestFullScreen) $(this).requestFullScreen();                
+              if($(this).requestFullScreen){
+                  var fullscreen_div=$("<div></div>");
+                  fullscreen_div.css({height:"100%",width:"100%"});
+                  var fullscreen_img=$(this).clone();
+                  fullscreen_img.appendTo(fullscreen_div);
+                  fullscreen_img.css({"max-width":"100%","max-height":"100%"});
+                  $("body").append(fullscreen_div);
+                  fullscreen_div.requestFullScreen();   
+                  //Fixme : remove when esc fullscreen
+              }              
             });
         }
         container.fadeIn(200);
