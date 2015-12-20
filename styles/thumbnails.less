@@ -1,0 +1,107 @@
+@import "styles/variables.less";
+
+
+#thumbnails{
+    text-align:center;
+    padding:@thumbnail-bgimg-blur;
+}
+
+.thumbnail_container .thumbnail.loading{
+    -webkit-box-shadow:none!important;
+    -moz-box-shadow: none!important;
+    box-shadow: none!important;
+}
+
+.thumbnail_container .aligner{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.thumbnail_container .infobox{
+    transition: opacity .2s;
+
+    position:absolute;
+    top:45%;
+    width:100%;
+    z-index:10;
+    font-size:2.5vh;
+    pointer-events: none;
+    font-family:"Passion One";
+    color:#fff;
+    text-shadow:0 0 1vh #000;
+    opacity:0;
+}
+
+.thumbnail_container .author{
+    width:100%;
+    text-align:center;
+}
+
+.thumbnail_container .likes{
+    margin-top:5%;
+    width:100%;
+    text-align:center;
+}
+
+.thumbnail_container .likes img{
+    height:4vh;
+    margin-bottom:-1.5vh;
+}
+
+.thumbnail_container .thumbnail{
+    border:none;
+    -webkit-box-shadow: 0px 0px 7px 1px @thumbnail-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @thumbnail-shadow;
+    box-shadow: 0px 0px 7px 1px @thumbnail-shadow;
+    transition: z-index .2s,transform .2s,box-shadow .2s,-moz-box-shadow .2s,-wekbit-box-shadow .2s;
+    z-index:2;
+    max-width:96%;
+    max-height:96%;
+    position:relative;
+    margin:auto;
+
+    display:inline-block;
+    vertical-align: middle;
+}
+
+
+.thumbnail_container:hover .thumbnail {
+    z-index:9;
+    -webkit-box-shadow: 0px 0px 7px 1px @thumbnail-shadow-active;
+    -moz-box-shadow: 0px 0px 7px 1px @thumbnail-shadow-active;
+    box-shadow: 0px 0px 7px 1px @thumbnail-shadow-active;
+    transform: scale(1.1,1.1);
+}
+
+.thumbnail_container:hover .infobox {
+    opacity:1;
+}
+    
+.thumbnail_container .bgimg{
+    z-index:1;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:block;    
+    
+    filter        : blur(@thumbnail-bgimg-blur);
+    -moz-filter   : blur(@thumbnail-bgimg-blur);
+    -webkit-filter: blur(@thumbnail-bgimg-blur);
+    -o-filter     : blur(@thumbnail-bgimg-blur);
+
+}
+
+.thumbnail_container img{
+    border-radius:8px;
+}
+
+.thumbnail_container{
+    display: inline-block;
+    position:relative;
+    height: ~`(100/Settings.COLUMNS)+"vh"`;
+    width: ~`(100/Settings.COLUMNS)+"%"`;
+}
+

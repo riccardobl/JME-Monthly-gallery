@@ -9,10 +9,10 @@ body{
     user-select: none;
     margin:0;
     padding:0;
-    background-color:@bg;
+    background-color:@background;
 
-    font-family:'Passion One';
-    color:@text-color;
+    font-family:@font-family;
+    color:@font-color;
 
     position:absolute;
     height: 100%;
@@ -31,11 +31,11 @@ a{
 }
 
 a:link {
-    color:@link-text-color;
+    color:@link-color;
 }
 
 a:visited {
-    color:@visited-link-text-color;
+    color:@link-color;
 }
 
 .disabled{
@@ -44,7 +44,6 @@ a:visited {
 
 .bar{
     background-color:@bar-bg;
-    color:@bar-fg;
     position:fixed;
     left:0;
     width:100%;
@@ -60,6 +59,21 @@ a:visited {
     margin:auto;
     position:relative;
     height:100%;
+}
+
+
+.container{
+    border:2px solid @container-border-color;
+    border-top:none;
+    border-bottom:none;
+    
+    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    box-shadow: 0px 0px 7px 1px @container-shadow;
+    width:100%;
+    min-height: @window-height - @bar-size - @date-bar-size;      
+    position:relative;
+    
 }
 
 // Top
@@ -109,7 +123,7 @@ a:visited {
     left:2%;
     font-size: @title-font-size;
     margin-top:-@title-font-size-paddig;
-    font-family:'Chango';
+    font-family:@title-font-family;
     color:@title-color;
     white-space:nowrap;
 }
@@ -129,9 +143,6 @@ a:visited {
     width:100%;
     z-index:1;
 }
-
-
-
 
 
 // Bottom
