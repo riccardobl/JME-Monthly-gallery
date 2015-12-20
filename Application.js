@@ -1,12 +1,9 @@
 $import(["Settings.js"],function(){
     $import([
-        "style.less",
-
+        "styles/fonts.less",
+        "styles/content.less",
+        "styles/structure.less"
     ],undefined,1);
-    
-    $import([
-        "templates/base.html"
-    ],initializeTemplate,2);
             
     $import([
         "gateways/DirectGate.js",
@@ -60,13 +57,14 @@ CAN_LOAD_TEMPLATE=false;
 
 function initializeTemplate(){
     if(CAN_LOAD_TEMPLATE){
-   //     $("#fullscreen_view").click(hideFullScreen);
         $("#current_date #left_arrow").click(function(){
+            if($(this).hasClass("disabled"))return;
             closePost();
             loading(true);
-            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)+1));
+            setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)+1)); 
         });
         $("#current_date #right_arrow").click(function(){
+            if($(this).hasClass("disabled"))return;
             closePost();
             loading(true);
             setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE)-1));
@@ -234,6 +232,11 @@ function setDate(date){
         month:date.month+"",
         year: date.year+""
     });
+    if(Calendar.toMonthOffset(date)===0){
+        $("#current_date #right_arrow").addClass("disabled");
+    }else{
+        $("#current_date #right_arrow").removeClass("disabled");                                              
+    }
     queryJMEHub();
 }
 
