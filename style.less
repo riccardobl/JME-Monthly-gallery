@@ -54,13 +54,11 @@ p {
 }
 
 a:link {
- //   &:extend(.text);
     color:@link-text-color;
     text-shadow:.1px .1px 8px @link-text-border;
 }
 
 a:visited {
-  //  &:extend(.text);
     color:@visited-link-text-color;
     text-shadow:.1px .1px 8px @visited-link-text-border;
 }
@@ -213,12 +211,11 @@ body{
     //white-space:nowrap;
 }
 
-.text {
+p,a{
     display:inline;
     text-shadow:.1px .1px 8px @text-border;
     font-size: @text-font-size;
     margin-top:@text-font-size-paddig;
-    font-family:'Passion One';
     color:@text-color;
     //white-space:nowrap;    
 }

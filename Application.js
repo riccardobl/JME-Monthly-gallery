@@ -291,9 +291,9 @@ function openPost(post_obj){
         var date_title=$("<div class='title_text'>Posted on:</div>)");
         var message_title=$("<div class='title_text'>Original message:</div>)");
         //Author text
-        var author_text=$("<div class='text'>"+post_obj.author+"</div>)");
-        var date_text=$("<div class='text'>"+post_obj.created_at+"</div>)");
-        var message_text=$("<div class='text'>"+post_obj.message.substring(0,100).trim()+"...</div>)");
+        var author_text=$("<div><p>"+post_obj.author+"</p></div>)");
+        var date_text=$("<div><p>"+post_obj.created_at+"</p></div>)");
+        var message_text=$("<div>"+post_obj.message.substring(0,100).trim()+"<p>...</p></div>)");
         var original_post_link=$("<a href='"+post_obj.url+"'>continue reading</a>");
         message_text.find("img").remove();
         //Appending elements
