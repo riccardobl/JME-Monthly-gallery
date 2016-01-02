@@ -7,7 +7,8 @@
             img.data("$imgs",images);
             img.data("$delay",delay);
             img.data("$firstLoop",true);
-            img.data("$passed_time",0);
+           // img.data("$passed_time",0);
+             img.data("$lastUpdate",0);
             img.data("$callback",callback);
             img.on("DOMNodeRemoved",function(){
                for(var i=0;i<$.fn.multiImg._queue.length;i++){
@@ -43,19 +44,15 @@
         }
         
             
-        var first_loop=img.data("$firstLoop");
-        
-        var ptime=img.data("$passed_time");
+        var timestamp=new Date().getTime();
+        var first_loop=img.data("$firstLoop");        
         if(!first_loop){
-            if(ptime+200<img.data("$delay")){
-                img.data("$passed_time",ptime+200);
-                return;
-            }
+            if(timestamp-img.data("$lastUpdate")<img.data("$delay")) return;
         }else{
             img.data("$firstLoop",false);
         }
         
-        img.data("$passed_time",0);
+        img.data("$lastUpdate",timestamp);
         
         var img_id=img.data("$img_id");
         var old_img_id=img_id;
@@ -74,5 +71,5 @@
            // $debug("Set new src ",imgs[img_id],"[",img_id,"]");
         });
     };
-    setInterval($.fn.multiImg._loop,200);
+    setInterval($.fn.multiImg._loop,50);
 }( jQuery ));

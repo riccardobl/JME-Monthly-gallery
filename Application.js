@@ -154,7 +154,7 @@ function refreshThumbnailsView(){
         }
         thumbnail.appendTo(post);
 
-        thumbnail.multiImg(imgs,1400,(function(new_src){
+        thumbnail.multiImg(imgs,2000,(function(new_src){
             var post=this[0];
             var post_obj=this[1];
             post.find(".thumbnail").each(function(){
