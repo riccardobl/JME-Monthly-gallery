@@ -27,6 +27,9 @@ $import(["Settings.js"],function(){
         "//raw.githubusercontent.com/iamceege/tooltipster/28fa8412cc1ae89de13c0d4d9fa30e1874e9d397/js/jquery.tooltipster.min.js",
         "//raw.githubusercontent.com/iamceege/tooltipster/28fa8412cc1ae89de13c0d4d9fa30e1874e9d397/css/tooltipster.css",
         "inc/jquery.autohide.js",
+        
+        //Share buttons
+        "inc/tp/share-button.min.js",
 
         // Parsers
         "parsers/ImageParser.js" //,
@@ -268,25 +271,47 @@ function openPost(post_obj){
     post_clearer.appendTo(container);
     $("#thumbnails").fadeOut(200,function(){
         var elements=post_obj.content;
-        //Titles title
-        var author_title=$("<div class='title_text'>Author:</div>)");
-        var date_title=$("<div class='title_text'>Posted on:</div>)");
-        var message_title=$("<div class='title_text'>Original message:</div>)");
-        //Author text
+        //Return button
+        var return_button=$("<div class='button' id='return_button'>Return to gallery</div>");
+        return_button.click(function(){
+            closePost();
+        });
+        var original_post_button=$("<a class='button' id='original_post_button' href='"+post_obj.url+"'>Go to post</a>");
+        //Titles
+        var author_title=$("<div class='title_text'>Author:</div>");
+        var date_title=$("<div class='title_text'>Posted on:</div>");
+        var message_title=$("<div class='title_text'>Original message:</div>");
+        
+        //Texts
         var author_text=$("<p>"+post_obj.author+"</p>)");
         var date_text=$("<p>"+post_obj.created_at.split("T")[0]+"</p>)");
-        var message_text=$("<p>"+post_obj.message.substring(0,300).trim()+"<p>...</p></p>)");
-        var original_post_link=$("<a href='"+post_obj.url+"'>continue reading</a>");
+        var message_text=$("<p>"+post_obj.message+"</p>)");
         message_text.find("a").remove();
         message_text.find("img").remove();
+        //var original_post_link=$("<a href='"+post_obj.url+"'>continue reading</a>");
+        var likes_text=$("<p id='likes_text'>"+post_obj.likes+" Likes</p>");
+        
+        //Share button
+        var share_button=$("<share-button></share-button>");
+        
         //Appending elements
         author_title.appendTo(description_container);
         author_text.appendTo(description_container);
+        
         date_title.appendTo(description_container);
         date_text.appendTo(description_container);
+        
         message_title.appendTo(description_container);
         message_text.appendTo(description_container);
-        original_post_link.appendTo(description_container);
+        
+        //original_post_link.appendTo(description_container);
+        
+        likes_text.appendTo(description_container);  
+        share_button.appendTo(description_container);
+        
+        return_button.appendTo(container);
+        original_post_button.appendTo(container);
+        //
         for(var i=0;i<elements.length;i++){
             var img=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
             img.addClass("posts_preview");
@@ -302,15 +327,20 @@ function openPost(post_obj){
                   fullscreen_img.css({"max-width":"100%","max-height":"100%"});
                   $("body").append(fullscreen_div);
                   fullscreen_div.requestFullScreen();   
-                  //Fixme : remove when esc fullscreen
+                  //Fixme : remove when esc fullscreen BREAKING NEWS:FIXED!!!!
               }              
             });
         }
+        //Setting up share button
+        new ShareButton({
+            networks: {
+            }
+        });
         container.fadeIn(200);
     });
-    $(document).keyup(function(e) {
+    /*$(document).keyup(function(e) {
      if (e.keyCode == 27) {
             closePost();
         }
-    });
+    });*/
 }

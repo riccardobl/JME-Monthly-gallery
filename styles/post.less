@@ -1,4 +1,5 @@
 @import "styles/variables.less";
+@import "styles/share-button.min.css";
 
 
 .title_text {
@@ -18,7 +19,16 @@
     //white-space:nowrap;    
 }
 
+#post share-button {
+    position:relative;
+    float:right;
+    margin-top:22.5%;
+}
 
+#post share-button .sb-social ul li:hover{
+    z-index:9;
+    transform:scale(1.2,1.2);
+}
 
 #post .container {
     border:none;
@@ -30,9 +40,10 @@
     //margin-left:2.5%;
     //margin-right:2.5%;
     //border:.1px solid @container-border-color; 
-    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
-    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
-    box-shadow: 0px 0px 7px 1px @container-shadow;
+    //-webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    //-moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    //box-shadow: 0px 0px 7px 1px @container-shadow;
+    //box-shadow:none;
     min-height:0px;
     width:45%;
     height:85%;
@@ -42,6 +53,15 @@
     margin-right:1.75%;
     //margin-left:0%;
     float:right;
+}
+
+
+#post #likes_text{
+    &:extend(.title_text);
+    position:relative;
+    text-size:14px!important;
+    float:left;
+    margin-top:20%;
 }
 
 #post .container:first-child{
@@ -68,6 +88,39 @@
     -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
     -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     box-shadow: 0px 0px 7px 1px @container-shadow;
-
 }
 
+.button {
+    display:inline-block;
+    background-color:@buttons-background-color;
+    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    box-shadow: 0px 0px 7px 1px @container-shadow;
+    color:@buttons-font-color;
+    font-size: @buttons-font-size;
+    //font-family:@font-family;     
+    padding:1%;
+    padding-bottom:2%;
+    text-align:center;
+}
+
+#return_button {
+    display:inline-block;
+    position:relative;
+    width:20%;
+    margin-left:50%;
+    margin-right:1%;
+    margin-bottom:5%;
+    height:2%;    
+}
+
+#original_post_button {
+    display:inline-block;
+    position:relative;
+    width:20%;
+    margin-left:1%;
+    margin-right:1%;
+    margin-bottom:5%;
+    height:2%;   
+    color:@buttons-font-color;
+}
