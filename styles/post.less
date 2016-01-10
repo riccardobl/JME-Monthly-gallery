@@ -1,4 +1,5 @@
 @import "styles/variables.less";
+@import "styles/share-button.min.css";
 
 
 .title_text {
@@ -18,7 +19,15 @@
     //white-space:nowrap;    
 }
 
+#post share-button {
+    float:right;
+    margin-top:22.5%;
+}
 
+#post share-button .sb-social ul li:hover{
+    z-index:9;
+    transform:scale(1.2,1.2);
+}
 
 #post .container {
     border:none;
@@ -76,6 +85,25 @@
     -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
     -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     box-shadow: 0px 0px 7px 1px @container-shadow;
-
 }
 
+.button {
+    background-color:@buttons-background-color;
+    -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
+    -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
+    box-shadow: 0px 0px 7px 1px @container-shadow;
+    color:@buttons-font-color;
+    font-size: @buttons-font-size;
+    //font-family:@font-family;     
+    padding:1%;
+    padding-bottom:2%;
+    text-align:center;
+}
+
+#return_button {
+    position:absolute;
+    width:20%;
+    margin-left:40%;
+    margin-right:40%;
+    height:2%;    
+}

@@ -27,6 +27,9 @@ $import(["Settings.js"],function(){
         "//raw.githubusercontent.com/iamceege/tooltipster/28fa8412cc1ae89de13c0d4d9fa30e1874e9d397/js/jquery.tooltipster.min.js",
         "//raw.githubusercontent.com/iamceege/tooltipster/28fa8412cc1ae89de13c0d4d9fa30e1874e9d397/css/tooltipster.css",
         "inc/jquery.autohide.js",
+        
+        //Share buttons
+        "share-button.min.js",
 
         // Parsers
         "parsers/ImageParser.js" //,
@@ -268,6 +271,11 @@ function openPost(post_obj){
     post_clearer.appendTo(container);
     $("#thumbnails").fadeOut(200,function(){
         var elements=post_obj.content;
+        //Return button
+        var return_button=$("<div class='button' id='return_button'>Return to gallery</div>");
+        return_button.click(function(){
+            closePost();
+        });
         //Titles
         var author_title=$("<div class='title_text'>Author:</div>");
         var date_title=$("<div class='title_text'>Posted on:</div>");
@@ -280,6 +288,8 @@ function openPost(post_obj){
         message_text.find("img").remove();
         var original_post_link=$("<a href='"+post_obj.url+"'>continue reading</a>");
         var likes_text=$("<p id='likes_text'>"+post_obj.likes+" Likes</p>");
+        //Share button
+        var share_button=$("<share-button></share-button>");
         //Appending elements
         author_title.appendTo(description_container);
         author_text.appendTo(description_container);
@@ -288,7 +298,9 @@ function openPost(post_obj){
         message_title.appendTo(description_container);
         message_text.appendTo(description_container);
         original_post_link.appendTo(description_container);
-        likes_text.appendTo(description_container);     
+        likes_text.appendTo(description_container);  
+        share_button.appendTo(description_container);
+        return_button.appendTo(container);
         for(var i=0;i<elements.length;i++){
             var img=$("<img id='wip_img_"+post_obj.post_id+"_"+i+"' src='img/loading.gif' />");
             img.addClass("posts_preview");
@@ -308,6 +320,11 @@ function openPost(post_obj){
               }              
             });
         }
+        //Setting up share button
+        new ShareButton({
+            networks: {
+            }
+        });
         container.fadeIn(200);
     });
     $(document).keyup(function(e) {
