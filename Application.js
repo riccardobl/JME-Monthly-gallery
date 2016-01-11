@@ -307,25 +307,49 @@ function openPost(post_obj) {
         var description_table = $("<table id='description_table'></table>");
         description_table.append("<tr><th>Author:</th><td>" + post_obj.author + "</td></tr>");
         description_table.append("<tr><th>Date:</th><td>" + post_obj.created_at.split("T")[0] + "</td></tr>");
+        description_table.append("<tr><th>" + post_obj.likes + " Likes</th><td><share-button></share-button></td></tr>");
         description_table.appendTo(left_column);
 
-        var social_table = $("<table id='social_table'></table>");
-        social_table.append("<tr><th>" + post_obj.likes + " Likes</th></tr>");
-        social_table.append("<tr><th><share-button></share-button></th></tr>");
-        social_table.appendTo(right_column);
-
-
+        
+        var message=$("<div id='postpreview'>"+post_obj.message+"</div>");
+        
+        message.find("*").each(function(){
+            var el=$(this);
+            if(el.is("a")){
+                var txt=el.text();
+                el.replaceWith("<span>"+txt+"</span>")
+            }
+        });
+ 
+        right_column.append(message);
+        
+        
         //Setting up share button
         new ShareButton({
             networks: {}
         });
 
+
+        var content_table = $("<table id='content_table'></table>");
+        content_table.appendTo(container);
+        var row=undefined;
+        
         var elements = post_obj.content;
         for (var i = 0; i < elements.length; i++) {
+            if(i%2===0){
+                row=$("<tr></tr>");
+                row.appendTo(content_table);
+            }
+                //img.appendTo(left_column);
+            // else img.appendTo(right_column);
+            
             var img = $("<img id='wip_img_" + post_obj.post_id + "_" + i + "' src='img/loading.gif' />");
             img.addClass("posts_preview");
             img.attr("src", elements[i].value);
-            img.appendTo(container);
+            var cell=$("<td></td>");
+            cell.append(img);
+            row.append(cell);
+
         }
 
         container.fadeIn(200);
