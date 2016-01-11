@@ -1,42 +1,30 @@
 @import "styles/variables.less";
-@import "styles/share-button.min.css";
-
-
-.title_text {
-    display:block;
-    font-size: @title-font-size;
-    //margin-top:@title-font-size-paddig;
-    font-family:@title-font-family;
-    color:@title-color;
-    //white-space:nowrap;
-}
-
 #post p {
-    display:inline;
-    text-shadow:.1px .1px 8px @text-shadow;
+    display: inline;
+    text-shadow: .1px .1px 8px @text-shadow;
     font-size: @text-font-size;
-    margin-top:@text-font-size-paddig;
+    margin-top: @text-font-size-paddig;
     //white-space:nowrap;    
 }
 
 #post share-button {
-    position:relative;
-    float:right;
-    margin-top:22.5%;
+    position: relative;
 }
 
-#post share-button .sb-social ul li:hover{
-    z-index:9;
-    transform:scale(1.2,1.2);
+#post share-button .sb-social ul li:hover {
+    z-index: 9;
+    transform: scale(1.2, 1.2);
 }
 
 #post .container {
-    border:none;
-    text-align: center;  
-    display:inline-block;
-    padding:1%;
-    margin:1%;
-    margin-top:3%;
+    border: none;
+    text-align: center;
+    display: inline-block;
+    padding: 1%;
+    margin: 1%;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
     //margin-left:2.5%;
     //margin-right:2.5%;
     //border:.1px solid @container-border-color; 
@@ -44,31 +32,43 @@
     //-moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     //box-shadow: 0px 0px 7px 1px @container-shadow;
     //box-shadow:none;
-    min-height:0px;
-    width:45%;
-    height:85%;
+    min-height: 0px;
+    width: 45%;
+    height: 85%;
 }
 
-#post .container:last-child{
-    margin-right:1.75%;
+#post .container:last-child {
+    margin-right: 1.75%;
     //margin-left:0%;
-    float:right;
+    float: right;
+    text-align: center;
 }
 
-
-#post #likes_text{
-    &:extend(.title_text);
-    position:relative;
-    text-size:14px!important;
-    float:left;
-    margin-top:20%;
+#post .container table {
+    width: 100%;
 }
 
-#post .container:first-child{
+#post .container table th {
+        width: 100%;
+    font-family: @title-font-family;
+    color: @title-color;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+#post .container table td{
+    white-space: nowrap;
+
+
+}
+
+#post .container:first-child {
     //margin-right:0%;
-    margin-left:1.75%;
-    float:left;
+    margin-left: 1.75%;
+    float: left;
+    text-align: left;
 }
+
 
 /*#description_container {
     margin:auto;
@@ -79,48 +79,35 @@
     margin
 }*/
 
-.posts_preview {
-    margin:auto;
-    display:block;
-    max-width:90%;
+#post .posts_preview {
+    margin: auto;
+    display: block;
+    max-width: 100%;
     margin-top: 1%;
-    margin-bottom: 1%;
     -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
     -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     box-shadow: 0px 0px 7px 1px @container-shadow;
 }
 
-.button {
-    display:inline-block;
-    background-color:@buttons-background-color;
+#post .button {
+     cursor: pointer; 
+    cursor: hand; 
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-bottom: 3%;
+    background-color: @buttons-background-color;
     -webkit-box-shadow: 0px 0px 7px 1px @container-shadow;
     -moz-box-shadow: 0px 0px 7px 1px @container-shadow;
     box-shadow: 0px 0px 7px 1px @container-shadow;
-    color:@buttons-font-color;
+    color: @buttons-font-color;
     font-size: @buttons-font-size;
     //font-family:@font-family;     
-    padding:1%;
-    padding-bottom:2%;
-    text-align:center;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
 }
 
-#return_button {
-    display:inline-block;
-    position:relative;
-    width:20%;
-    margin-left:50%;
-    margin-right:1%;
-    margin-bottom:5%;
-    height:2%;    
-}
-
-#original_post_button {
-    display:inline-block;
-    position:relative;
-    width:20%;
-    margin-left:1%;
-    margin-right:1%;
-    margin-bottom:5%;
-    height:2%;   
-    color:@buttons-font-color;
+#post #go_to_post.button {
+    background-color: @buttons-gotopost-background-color;
+    color:@buttons-gotopost-font-color;
 }
