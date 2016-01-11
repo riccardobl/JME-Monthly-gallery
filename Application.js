@@ -122,70 +122,84 @@ function URI(data) {
     }
 }
 
-
-function refreshThumbnailsView() {
+function error404(type) {
     var container = $("#thumbnails");
     container.empty();
 
-    var l = GALLERY_ELEMENTS.length;
-    for (var i = 0; i < l; i++) {
-        var post = $("<div></div>");
-        post.addClass("thumbnail_container");
-        post.appendTo(container);
+    var current_month = Calendar.toMonthOffset(DATE) === 0;
+    container.append("<div id='error'><img src='img/nomonkey.png' /><p>Thread not found.</p></div>");
 
-        var post_obj = GALLERY_ELEMENTS[i];
-        if (!post_obj) continue;
+}
 
-        if (Modernizr.cssfilters) {
-            var bgimg = $("<img id='blur_img_" + post_obj.post_id + "' />");
-            bgimg.addClass("bgimg");
-            bgimg.appendTo(post);
+
+function refreshThumbnailsView() {
+
+    if (GALLERY_ELEMENTS.length === 0) {
+        error404();
+    } else {
+        var container = $("#thumbnails");
+        container.empty();
+
+        var l = GALLERY_ELEMENTS.length;
+        for (var i = 0; i < l; i++) {
+            var post = $("<div></div>");
+            post.addClass("thumbnail_container");
+            post.appendTo(container);
+
+            var post_obj = GALLERY_ELEMENTS[i];
+            if (!post_obj) continue;
+
+            if (Modernizr.cssfilters) {
+                var bgimg = $("<img id='blur_img_" + post_obj.post_id + "' />");
+                bgimg.addClass("bgimg");
+                bgimg.appendTo(post);
+            }
+
+            var aligner = $("<span></span>");
+            aligner.addClass("aligner");
+            aligner.appendTo(post);
+
+            var thumbnail = $("<img id='thumbnail_" + post_obj.post_id + "' src='img/loading.gif' />");
+            thumbnail.addClass("thumbnail");
+            thumbnail.addClass("loading");
+
+            var imgs = [];
+            for (var j = 0; j < post_obj.content.length; j++) {
+                var element = post_obj.content[j];
+                element.value = IMAGES_GATEWAY.rewriteUrl(element.value);
+                imgs.push(element.value);
+            }
+            thumbnail.appendTo(post);
+
+            thumbnail.multiImg(imgs, 2000, (function (new_src) {
+                var post = this[0];
+                var post_obj = this[1];
+                post.find(".thumbnail").each(function () {
+                    $(this).removeClass("loading");
+                });
+                post.find(".bgimg").each(function () {
+                    var bgimg = $(this);
+                    bgimg.attr("src", new_src);
+
+                });
+            }).bind([post, post_obj]));
+
+            var infobox = $("<div class='infobox'></div>");
+            infobox.appendTo(post);
+
+            var author = $("<div class='author'></div>");
+            author.html("<span>" + post_obj.author + "</span>");
+            author.appendTo(infobox);
+
+            var likes = $("<div class='likes'></div>");
+            likes.html("<span>" + post_obj.likes + "</span><img src='img/banana.svg' />");
+            likes.appendTo(infobox);
+
+            post.click((function () {
+                openPost(this);
+            }).bind(post_obj));
+
         }
-
-        var aligner = $("<span></span>");
-        aligner.addClass("aligner");
-        aligner.appendTo(post);
-
-        var thumbnail = $("<img id='thumbnail_" + post_obj.post_id + "' src='img/loading.gif' />");
-        thumbnail.addClass("thumbnail");
-        thumbnail.addClass("loading");
-
-        var imgs = [];
-        for (var j = 0; j < post_obj.content.length; j++) {
-            var element = post_obj.content[j];
-            element.value = IMAGES_GATEWAY.rewriteUrl(element.value);
-            imgs.push(element.value);
-        }
-        thumbnail.appendTo(post);
-
-        thumbnail.multiImg(imgs, 2000, (function (new_src) {
-            var post = this[0];
-            var post_obj = this[1];
-            post.find(".thumbnail").each(function () {
-                $(this).removeClass("loading");
-            });
-            post.find(".bgimg").each(function () {
-                var bgimg = $(this);
-                bgimg.attr("src", new_src);
-
-            });
-        }).bind([post, post_obj]));
-
-        var infobox = $("<div class='infobox'></div>");
-        infobox.appendTo(post);
-
-        var author = $("<div class='author'></div>");
-        author.html("<span>" + post_obj.author + "</span>");
-        author.appendTo(infobox);
-
-        var likes = $("<div class='likes'></div>");
-        likes.html("<span>" + post_obj.likes + "</span><img src='img/banana.svg' />");
-        likes.appendTo(infobox);
-
-        post.click((function () {
-            openPost(this);
-        }).bind(post_obj));
-
     }
 }
 
@@ -294,7 +308,7 @@ function openPost(post_obj) {
         description_table.append("<tr><th>Author:</th><td>" + post_obj.author + "</td></tr>");
         description_table.append("<tr><th>Date:</th><td>" + post_obj.created_at.split("T")[0] + "</td></tr>");
         description_table.appendTo(left_column);
-        
+
         var social_table = $("<table id='social_table'></table>");
         social_table.append("<tr><th>" + post_obj.likes + " Likes</th></tr>");
         social_table.append("<tr><th><share-button></share-button></th></tr>");
