@@ -4,7 +4,9 @@ $import(["Settings.js"], function () {
         "styles/structure.less",
         "styles/thumbnails.less",
         "styles/post.less",
-        "inc/tp/share/share-button.min.css"
+        "inc/tp/jssocials/jssocials.css",
+        "inc/tp/jssocials/jssocials-theme-plain.css"
+
     ], undefined, 1);
 
     $import([
@@ -30,7 +32,7 @@ $import(["Settings.js"], function () {
         "inc/jquery.autohide.js",
 
         //Share buttons
-        "inc/tp/share/share-button.min.js",
+        "inc/tp/jssocials/jssocials.min.js",
 
         // Parsers
         "parsers/ImageParser.js" //,
@@ -307,28 +309,22 @@ function openPost(post_obj) {
         var description_table = $("<table id='description_table'></table>");
         description_table.append("<tr><th>Author:</th><td>" + post_obj.author + "</td></tr>");
         description_table.append("<tr><th>Date:</th><td>" + post_obj.created_at.split("T")[0] + "</td></tr>");
-        description_table.append("<tr><th>" + post_obj.likes + " Likes</th><td><share-button></share-button></td></tr>");
+        description_table.append("<tr><th>Likes</th><td>" + post_obj.likes + " </td></tr>");
         description_table.appendTo(left_column);
 
         
-        var message=$("<div id='postpreview'>"+post_obj.message+"</div>");
-        
-        message.find("*").each(function(){
-            var el=$(this);
-            if(el.is("a")){
-                var txt=el.text();
-                el.replaceWith("<span>"+txt+"</span>")
-            }
-        });
- 
-        right_column.append(message);
-        
-        
-        //Setting up share button
-        new ShareButton({
-            networks: {}
+        var share=$("<div id='share'></div>");
+
+        share.jsSocials({
+            showCount: "inside",
+            showLabel: false,
+            shares: ["email", "twitter", "facebook", "googleplus", "pinterest", "whatsapp"]
         });
 
+        
+        right_column.append(share);
+        
+       
 
         var content_table = $("<table id='content_table'></table>");
         content_table.appendTo(container);
@@ -347,7 +343,11 @@ function openPost(post_obj) {
             img.addClass("posts_preview");
             img.attr("src", elements[i].value);
             var cell=$("<td></td>");
-            cell.append(img);
+            
+            var href=$("<a target='_blank' href='"+elements[i].value+"'></a>");
+            href.append(img);
+            cell.append(href);
+
             row.append(cell);
 
         }
