@@ -7,6 +7,8 @@
             img.data("$imgs",images);
             img.data("$delay",delay);
             img.data("$firstLoop",true);
+        //    img.data("$firstDelay",10);
+
            // img.data("$passed_time",0);
              img.data("$lastUpdate",0);
             img.data("$callback",callback);
@@ -37,18 +39,26 @@
                 finding=false;
             }else{
                  $.fn.multiImg._queue.splice($.fn.multiImg._queue_id,1);
+                img=undefined;
             }
-        
+            if(!img[0].complete){
+                $debug("Skip ",img.src," because it's still loading...");
+                img=undefined;
+            }
             $.fn.multiImg._queue_id++;
             if($.fn.multiImg._queue_id>=$.fn.multiImg._queue.length)$.fn.multiImg._queue_id=0;
         }
         
-            
+        if(!img)return;
         var timestamp=new Date().getTime();
         var first_loop=img.data("$firstLoop");        
         if(!first_loop){
             if(timestamp-img.data("$lastUpdate")<img.data("$delay")) return;
         }else{
+            //if( img.data("$firstDelay")!=0){
+            //    img.data("$firstDelay", img.data("$firstDelay")-1);
+            //    return;
+            //}
             img.data("$firstLoop",false);
         }
         
