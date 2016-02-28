@@ -22,14 +22,14 @@ $import(["Settings.js"], function () {
         "inc/tp/modernizr-custom.js",
 
         // JQuery & Plugins
-        "//code.jquery.com/jquery-1.11.3.min.js",
+        "inc/tp/jquery-1.11.3.min.js",
         "inc/jquery.multi-img-viewer.js",
-        "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js",
-        "//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/shortcuts/inview.min.js",
-        "//gist.githubusercontent.com/johan/2128691/raw/b81d1b59fd98091a1a2c8814f77660a10a9b0e16/jquery.fullscreen.js",
-        "//raw.githubusercontent.com/iamceege/tooltipster/28fa8412cc1ae89de13c0d4d9fa30e1874e9d397/js/jquery.tooltipster.min.js",
-        "//raw.githubusercontent.com/iamceege/tooltipster/28fa8412cc1ae89de13c0d4d9fa30e1874e9d397/css/tooltipster.css",
-        "inc/jquery.autohide.js",
+        //"inc/tp/jquery.waypoints.min.js",
+        //"inc/tp/inview.min.js",
+        //"inc/tp/jquery.fullscreen.js",
+        "inc/tp/jquery.tooltipster.min.js",
+        "inc/tp/tooltipster.css",
+        //"inc/jquery.autohide.js",
 
         //Share buttons
         "inc/tp/jssocials/jssocials.min.js",

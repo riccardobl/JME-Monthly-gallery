@@ -31,7 +31,9 @@ ImageParser={
                         value:img,
                         vars:vrs
                     });
-                }                
+                }else{
+                    $debug("Exclude ",img);
+                }
                                 
              
             }
