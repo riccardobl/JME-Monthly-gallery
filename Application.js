@@ -149,13 +149,18 @@ function refreshThumbnailsView() {
 
         var l = GALLERY_ELEMENTS.length;
         for (var i = 0; i < l; i++) {
-            var post = $("<div></div>");
-            post.addClass("thumbnail_container");
-            post.appendTo(container);
-
             var post_obj = GALLERY_ELEMENTS[i];
             if (!post_obj) continue;
 
+            if($arrContains(post_obj.vars,"excluded")){
+                continue;
+            }
+            
+            var post = $("<div></div>");
+            post.addClass("thumbnail_container");
+            post.appendTo(container);
+            
+            
             if (Modernizr.cssfilters) {
                 var bgimg = $("<img id='blur_img_" + post_obj.post_id + "' />");
                 bgimg.addClass("bgimg");
