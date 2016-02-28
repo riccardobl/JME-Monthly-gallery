@@ -22,13 +22,18 @@ ImageParser={
                 if(vrs.length>1){
                     vrs=vrs[1];
                     vrs=vrs.split(/[,]/);                    
-                }else vrs=[];               
+                }else vrs=[];     
+                
+                
+                if(!$arrContains(vrs,"excluded")){
+                    out_array.push({
+                        type:"image/"+ext,
+                        value:img,
+                        vars:vrs
+                    });
+                }                
                                 
-                out_array.push({
-                    type:"image/"+ext,
-                    value:img,
-                    vars:vrs
-                });
+             
             }
         }
     }
