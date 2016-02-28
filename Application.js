@@ -42,7 +42,7 @@ $import(["Settings.js"], function () {
     ], $main);
 });
 
-$IS_RELEASED = document.domain === "release.jme-monthly-gallery.frk.wf";
+$IS_RELEASED = document.domain === "release.jme-monthly-gallery.frk.wf"||document.domain === "monthly.jmonkeyengine.org";
 
 
 GALLERY = null;
@@ -52,7 +52,12 @@ DATE = 0;
 
 
 function $main() {
-    $_debug.enable = !$IS_RELEASED;
+    if($IS_RELEASED){
+        $_debug.enable = false;
+    }else{
+        $("#dev").css({"display":"block"});
+        $_debug.enable = true;
+    }
 
 
     // Init template
@@ -96,7 +101,7 @@ function $main() {
 
     // Init gallery    
     IMAGES_GATEWAY = new DirectGate();
-    GALLERY = new MonthlyGallery("http://hub.jmonkeyengine.org/t/", $IS_RELEASED ? new EmbeddedCORSGate() : new CorsGateForTheInternette());
+    GALLERY = new MonthlyGallery("http://hub.jmonkeyengine.org/t/", $IS_RELEASED ? new CorsGateForTheInternette() /*new EmbeddedCORSGate()*/ : new CorsGateForTheInternette());
     GALLERY.getParserManager().addParser(ImageParser);
     // GALLERY.getParserManager().addParser(VideoParser); REMOVED
     //GALLERY.getParserManager().addParser(YoutubeParser); REMOVED

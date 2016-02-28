@@ -1,0 +1,10 @@
+#!/bin/bash
+export SWIFT_BIN="/usr/local/bin/swift"
+export OS_AUTH_URL="https://auth.cloud.ovh.net/v2.0"
+export OS_TENANT_ID=""
+export OS_TENANT_NAME=""
+export OS_USERNAME=""
+export OS_PASSWORD=""
+export OS_REGION_NAME="GRA1"
+export TARGET_CONTAINER=""
+

@@ -2,3 +2,4 @@
 bfg*.jar
 fonts/foo.ttf
 *bfg-report*
+uploadToOvh.settings.sh
