@@ -8,6 +8,10 @@ handlers:
 - url: /embedded_corsproxy($|\/.*$)
   script: embedded_corsproxy/php/index.php
 
+- url: /phpinfo$
+  script: misc/php/phpinfo.php
+
+
 - url: /(.*\.(css|less))
   http_headers:
     content_type: text/css
@@ -49,6 +53,14 @@ handlers:
     content_type: image/png
   static_files: \1
   upload: (.*\.(png))
+
+- url: /(.*\.(gif))
+  http_headers:
+    content_type: image/gif
+  static_files: \1
+  upload: (.*\.(gif))
+
+
   
 - url: /(.*\.txt)
   http_headers:
@@ -69,7 +81,6 @@ handlers:
   upload: index.html
 
 skip_files:
-  - ^(.*/)?#.*#$
   - ^(.*/)?.*~$
   - ^(.*/)?\..*$
   - ^(.*/)?.*\.settings\.sh$

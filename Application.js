@@ -97,7 +97,7 @@ function $main() {
     // Init gallery    
     THUMBNAIL_GATEWAY = new DirectGate();
     IMAGE_GATEWAY = new DirectGate();
-    GALLERY = new MonthlyGallery("http://hub.jmonkeyengine.org/t/", $IS_RELEASED ? new CorsGateForTheInternette() /*new EmbeddedCORSGate()*/ : new CorsGateForTheInternette());
+    GALLERY = new MonthlyGallery("http://hub.jmonkeyengine.org/t/", $IS_RELEASED ? new EmbeddedCORSGate() : new CorsGateForTheInternette());
     GALLERY.getParserManager().addParser(ImageParser);
     // GALLERY.getParserManager().addParser(VideoParser); REMOVED
     //GALLERY.getParserManager().addParser(YoutubeParser); REMOVED

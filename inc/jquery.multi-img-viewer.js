@@ -26,7 +26,7 @@
             img.on("DOMNodeRemoved",function(){
                for(var i=0;i<$.fn.multiImg._queue.length;i++){
                    if($.fn.multiImg._queue[i]===img){
-                                         $debug("Remove ",i);
+        //                                 $debug("Remove ",i);
 
                         break;
                    }

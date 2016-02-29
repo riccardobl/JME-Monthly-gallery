@@ -22,19 +22,28 @@ Calendar={
     fromMonthOffset:function(offset){
         if(typeof offset==='undefined')offset=0;
         var d=new Date();
-        d.setMonth(d.getMonth()-offset);
-        var output={
-            month: Calendar._MONTHS[d.getMonth()],
-            year: d.getFullYear()
+        
+        var yo=Math.floor(offset/12);
+        var mo=offset-(yo*12);
+        
+        var y=d.getFullYear()-yo;
+        var m=d.getMonth()-mo;
+        if(m<0){
+            m=12+m;
+            y--;
         }
+        var output={
+            month: Calendar._MONTHS[m],
+            year: y
+        }
+        
+        $debug("Calendar: Offset",offset,"means: ",mo,"months and ",yo,"years ==== ",JSON.stringify(output));
         return output;
     },
     toMonthOffset:function(calendar_date){
-        var today=new Date();
-        var d1=new Date(calendar_date.year,Calendar._MONTHS.indexOf(calendar_date.month),1);
-        var d2=new Date(today.getFullYear(),today.getMonth(),1);
-        var offset=d2.getMonth() - d1.getMonth() + (12 * (d2.getFullYear() - d1.getFullYear()));
-        $debug(d2,"-",d1,"=",offset);
-        return offset;
+        var d=new Date();
+        var y=calendar_date.year;
+        var m=Calendar._MONTHS.indexOf(calendar_date.month);
+        return ((d.getFullYear() - y) * 12) + d.getMonth() - m;
     }
 }
