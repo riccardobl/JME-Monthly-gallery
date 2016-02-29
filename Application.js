@@ -13,6 +13,8 @@ $import(["Settings.js"], function () {
         "gateways/DirectGate.js",
         "gateways/CorsGateForTheInternette.js",
         "gateways/EmbeddedCORSGate.js",
+        "gateways/EmbeddedImageScalerGate.js",
+        "gateways/RSZioGate.js",
 
         "inc/function-queue.js",
         "core/Calendar.js",
@@ -47,7 +49,8 @@ $IS_RELEASED = document.domain === "release.jme-monthly-gallery.frk.wf"||documen
 
 GALLERY = null;
 GALLERY_ELEMENTS = [];
-IMAGES_GATEWAY = null;
+THUMBNAIL_GATEWAY = null;
+IMAGE_GATEWAY = null;
 DATE = 0;
 
 
@@ -100,7 +103,8 @@ function $main() {
 
 
     // Init gallery    
-    IMAGES_GATEWAY = new DirectGate();
+    THUMBNAIL_GATEWAY = new DirectGate();
+    IMAGE_GATEWAY = new DirectGate();
     GALLERY = new MonthlyGallery("http://hub.jmonkeyengine.org/t/", $IS_RELEASED ? new CorsGateForTheInternette() /*new EmbeddedCORSGate()*/ : new CorsGateForTheInternette());
     GALLERY.getParserManager().addParser(ImageParser);
     // GALLERY.getParserManager().addParser(VideoParser); REMOVED
@@ -175,12 +179,12 @@ function refreshThumbnailsView() {
             var imgs = [];
             for (var j = 0; j < post_obj.content.length; j++) {
                 var element = post_obj.content[j];
-                element.value = IMAGES_GATEWAY.rewriteUrl(element.value);
+                $debug("Add ",element.value," to the gallery.");
                 imgs.push(element.value);
             }
             thumbnail.appendTo(post);
 
-            thumbnail.multiImg(imgs, 2000, (function (new_src) {
+            thumbnail.multiImg(imgs, 2000, function (src){return THUMBNAIL_GATEWAY.rewriteUrl(src); },(function (new_src) {
                 var post = this[0];
                 var post_obj = this[1];
                 post.find(".thumbnail").each(function () {
@@ -188,8 +192,21 @@ function refreshThumbnailsView() {
                 });
                 post.find(".bgimg").each(function () {
                     var bgimg = $(this);
-                    bgimg.attr("src", new_src);
+                    
+                    
+                    var new_img=$("<img/>");
+                    new_img.attr("src",new_src);   
 
+                    for (i = 0; i < bgimg[0].attributes.length; i++){
+                        var a = bgimg[0].attributes[i];
+                        if(a.name!=="src")new_img.attr(a.name, a.value);
+                    }
+                    new_img.data(bgimg.data());
+
+                    bgimg.replaceWith(new_img);
+                    
+                    //bgimg.attr("src",new_src);
+                    // See jquery.multi-img-viewer.js note.
                 });
             }).bind([post, post_obj]));
 
@@ -348,7 +365,7 @@ function openPost(post_obj) {
             
             var img = $("<img id='wip_img_" + post_obj.post_id + "_" + i + "' src='img/loading.gif' />");
             img.addClass("posts_preview");
-            img.attr("src", elements[i].value);
+            img.attr("src", IMAGE_GATEWAY.rewriteUrl(elements[i].value));
             var cell=$("<td></td>");
             
             var href=$("<a target='_blank' href='"+elements[i].value+"'></a>");

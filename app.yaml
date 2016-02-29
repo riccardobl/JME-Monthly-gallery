@@ -67,3 +67,10 @@ handlers:
 - url: /
   static_files: index.html
   upload: index.html
+
+skip_files:
+  - ^(.*/)?#.*#$
+  - ^(.*/)?.*~$
+  - ^(.*/)?\..*$
+  - ^(.*/)?.*\.settings\.sh$
+  - ^trash(\/.*)?$

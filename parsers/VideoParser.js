@@ -1,5 +1,5 @@
 VideoParser={
-    parse:function(in_content,out_array){
+    parse:function(post_vars,in_content,out_array){
         var pattern=new RegExp("<video[^>]+><source\\s*src=\"([^\"]+)",'gi');
         var matched;
         while((matched=pattern.exec(in_content))!=null){    

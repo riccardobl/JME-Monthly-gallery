@@ -1,5 +1,6 @@
 ImageParser={
-    parse:function(in_content,out_array){
+    parse:function(post_vars,in_content,out_array){
+        if($arrContains(post_vars,"excluded"))return;
         var pattern=new RegExp("<img\\ss*src\\s*=\\s*\"([^\"]+)",'gi');
         var matched;
         while((matched=pattern.exec(in_content))!=null){    

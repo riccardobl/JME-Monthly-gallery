@@ -8,8 +8,19 @@ ParserManager=function(){
         for(var i=0;i<posts.length;i++){
             var post=posts[i];
             
+    
             var o_obj={};            
-            o_obj.content=this._parseContent(post.cooked);
+
+            o_obj.vars=[];
+            var re = new RegExp("\!#mg\-([A-Z0-9_=.]+)", 'gim');
+            var match;
+            while(match=re.exec(post.cooked)){
+              o_obj.vars.push(match[1].toLowerCase());  
+            }
+            $debug("Post ",post.id," vars: ",o_obj.vars);
+            $debug(post.cooked);
+            
+            o_obj.content=this._parseContent(o_obj.vars,post.cooked);
             if(o_obj.content.length===0)continue;
             output.push(o_obj);
             
@@ -26,6 +37,10 @@ ParserManager=function(){
             o_obj.post_id=post.id;
             o_obj.likes=0;
             o_obj.message=post.cooked;
+            
+      
+
+                
             // Get likes
             for(var j=0;j<post.actions_summary.length;j++){
                 if(post.actions_summary[j].id===2){
@@ -39,10 +54,10 @@ ParserManager=function(){
         return output;
     }
 
-    this._parseContent=function(content){ // Return array of media
+    this._parseContent=function(post_vars,content){ // Return array of media
         var out_array=[];
         for(var i=0;i<this._PARSERS.length;i++){
-            this._PARSERS[i].parse(content,out_array);
+            this._PARSERS[i].parse(post_vars,content,out_array);
         }
         return out_array;
     }

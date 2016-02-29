@@ -1,5 +1,5 @@
 ParserName={
-    parse:function(in_content,out_array){
+    parse:function(post_vars,in_content,out_array){
         // Find elements
             // foreach element found
                 out_array.push({
