@@ -13,8 +13,6 @@ $import(["Settings.js"], function () {
         "gateways/DirectGate.js",
         "gateways/CorsGateForTheInternette.js",
         "gateways/EmbeddedCORSGate.js",
-        "gateways/EmbeddedImageScalerGate.js",
-        "gateways/RSZioGate.js",
 
         "inc/function-queue.js",
         "core/Calendar.js",
@@ -26,20 +24,14 @@ $import(["Settings.js"], function () {
         // JQuery & Plugins
         "inc/tp/jquery-1.11.3.min.js",
         "inc/jquery.multi-img-viewer.js",
-        //"inc/tp/jquery.waypoints.min.js",
-        //"inc/tp/inview.min.js",
-        //"inc/tp/jquery.fullscreen.js",
         "inc/tp/jquery.tooltipster.min.js",
         "inc/tp/tooltipster.css",
-        //"inc/jquery.autohide.js",
 
         //Share buttons
         "inc/tp/jssocials/jssocials.min.js",
 
         // Parsers
         "parsers/ImageParser.js" //,
-        //"parsers/VideoParser.js", REMOVED
-        //"parsers/YoutubeParser.js" REMOVED
 
     ], $main);
 });
