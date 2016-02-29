@@ -4,3 +4,6 @@ fonts/foo.ttf
 *bfg-report*
 uploadToOvh.settings.sh
 trash
+embedded_imagescaler
+gateways/EmbeddedImageScalerGate.js
+gateways/RSZioGate.js
