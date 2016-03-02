@@ -1,5 +1,6 @@
 CorsGateForTheInternette=function(){
     this.rewriteUrl = function(url){
+        url=url.replace("://","!");
         return "//cors-gate-for-the-internette.frk.wf/"+url;
     };
     
