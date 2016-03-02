@@ -11,14 +11,14 @@ function $import(file,callback,import_queue){
         for(var i=0;i<file.length;i++){
             var v={f:file[i],c:i==file.length-1?callback:undefined};
             queue.INCLUDED_SCRIPTS.push(v);  
-            $debug("Add ",v.f,"to loading queue",import_queue);
+            $debug("Importer:  Add ",v.f,"to loading queue",import_queue);
         }
     }else{
         var v={f:file,c:callback};
         queue.INCLUDED_SCRIPTS.push(v);   
     }
     if (document.readyState === "complete"){
-        $debug("Window already loaded. Import immediately");
+        $verboseDebug("Importer:  Window already loaded. Import immediately");
         if(!queue.LOADING)$_import.load_next_script(queue);
     }
 }
@@ -53,27 +53,58 @@ $_import={
         if(q.LOADED_SCRIPTS===q.INCLUDED_SCRIPTS.length){q.LOADING=false;return;} 
         q.LOADING=true;
         var v=q.INCLUDED_SCRIPTS[q.LOADED_SCRIPTS];  
-        $debug("Import",v.f,q.LOADED_SCRIPTS);
+        $debug("Importer:  Import",v.f,q.LOADED_SCRIPTS);
         q.LOADED_SCRIPTS++;
         $_import._load_script(v,function(){$_import.load_next_script(q);});       
     },
     _load_script:function(v,done){
-        $http(v.f,function(status,code){   
+        var loadcb=function(status,code){   
             if(!status){
-                $debug("Cannot import",v.f);
+                $debug("Importer: Cannot import",v.f);
                 return;
             }
             $_import._appendCode(code,v.f,function(){
                 if(done)done();     
                 if(typeof v.c!=="undefined"){
-                    $debug(v.f,"has a callback");
+                    $verboseDebug("Importer: ",v.f,"has a callback");
                     v.c();                 
                 }
             });
-        });
+        };
+        var loadAndStore=function(status, code){
+            loadcb(status,code);
+            if(status&&typeof(Storage) !== "undefined"){
+                localStorage.setItem(v.f,JSON.stringify({version:$VERSION,'code':code}));
+                $verboseDebug("Importer: Storing ",v.f," on cache for future usage.");
+
+            }
+        };
+        if(typeof(Storage) !== "undefined") {
+            try{
+                $verboseDebug("Importer: Local storage is available!");
+                var cached_script=localStorage.getItem(v.f);
+                if(cached_script){
+                   // $verboseDebug("Importer: Load from json",cached_script);
+                    cached_script=JSON.parse(cached_script);
+                    if(typeof $VERSION==="undefined"||cached_script.version===$VERSION){
+                        loadcb(true,cached_script.code);
+                        $verboseDebug("Importer:  Load ",v.f," from cache! Version: ",$VERSION);
+                        return;
+                    }else{
+                        $verboseDebug("Importer:  Version has changed, the cache for ",v.f," has been dropped! Version: ",$VERSION);
+
+                    }
+                }
+            }catch(ex){
+                $verboseDebug("Importer: Error",ex);
+            }
+        }else{
+            $verboseDebug("Importer: Local storage is not available.");
+        }
+        $http(v.f,loadAndStore);
     },
     _appendCode:function(code,path,callback){
-        $verboseDebug("Append",code);
+        $verboseDebug("Importer:  Append",code);
         for(var ext in $_import._IMPORTERS){
             if(path.indexOf(ext, path.length-ext.length)!==-1){
                 $_import._IMPORTERS[ext](code,path,callback);

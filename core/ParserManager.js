@@ -17,8 +17,8 @@ ParserManager=function(){
             while(match=re.exec(post.cooked)){
               o_obj.vars.push(match[1].toLowerCase());  
             }
-            $debug("Post ",post.id," vars: ",o_obj.vars);
-            $debug(post.cooked);
+         //   $debug("Post ",post.id," vars: ",o_obj.vars);
+           // $debug(post.cooked);
             
             o_obj.content=this._parseContent(o_obj.vars,post.cooked);
             if(o_obj.content.length===0)continue;

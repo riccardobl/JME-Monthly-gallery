@@ -1,3 +1,3 @@
 Settings={
-    COLUMNS:3
+    COLUMNS:2
 }

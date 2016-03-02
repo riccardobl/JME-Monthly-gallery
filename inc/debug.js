@@ -21,7 +21,7 @@ function $verboseDebug(){
 $_debug={
     start_time:new Date(),
     enable:true,
-    verbose:false,
+    verbose:true,
     alert:false,
     print_time:true,
     print:function(string){    

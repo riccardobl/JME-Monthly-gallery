@@ -1,18 +1,35 @@
+
+GALLERY = null;
+GALLERY_ELEMENTS = [];
+DATE = 0;
+// #
+
 $import(["Settings.js"], function () {
+    // Use multiple queue for faster async load
     $import([
-        "styles/fonts.less",
-        "styles/structure.less",
-        "styles/thumbnails.less",
-        "styles/post.less",
+        "styles/fonts.less"
+    ], undefined, 1);
+    $import([
+        "styles/structure.less"
+    ], undefined, 2);
+    $import([
+        "styles/thumbnails.less"
+    ], undefined, 3);
+    $import([
+       "styles/post.less"
+    ], undefined, 4);
+    $import([
         "inc/tp/jssocials/jssocials.css",
         "inc/tp/jssocials/jssocials-theme-plain.css"
+    ], undefined, 5);
 
-    ], undefined, 1);
 
     $import([
         "gateways/DirectGate.js",
         "gateways/CorsGateForTheInternette.js",
         "gateways/EmbeddedCORSGate.js",
+        "gateways/ImgurInstrumentGate.js",
+
 
         "inc/function-queue.js",
         "core/Calendar.js",
@@ -27,6 +44,7 @@ $import(["Settings.js"], function () {
         "inc/tp/jquery.tooltipster.min.js",
         "inc/tp/tooltipster.css",
 
+
         //Share buttons
         "inc/tp/jssocials/jssocials.min.js",
 
@@ -36,25 +54,18 @@ $import(["Settings.js"], function () {
     ], $main);
 });
 
-$IS_RELEASED = document.domain === "release.jme-monthly-gallery.frk.wf"||document.domain === "monthly.jmonkeyengine.org";
 
 
-GALLERY = null;
-GALLERY_ELEMENTS = [];
-THUMBNAIL_GATEWAY = null;
-IMAGE_GATEWAY = null;
-DATE = 0;
 
 
 function $main() {
-    if($IS_RELEASED){
-        $_debug.enable = false;
-    }else{
+    HUB_GATEWAY = $IS_RELEASED ? new EmbeddedCORSGate() : new CorsGateForTheInternette();
+    THUMBNAIL_GATEWAY = new ImgurInstrumentGate("m");//DirectGate();
+    IMAGE_GATEWAY = new DirectGate();
+    
+    if(!$IS_RELEASED){
         $("#dev").css({"display":"block"});
-        $_debug.enable = true;
     }
-
-
     // Init template
     $('.tooltip').tooltipster();
     $("#current_date #left_arrow").click(function () {
@@ -69,6 +80,7 @@ function $main() {
         loading(true);
         setDate(Calendar.fromMonthOffset(Calendar.toMonthOffset(DATE) - 1));
     });
+    // Get contributors list
     $http("https://api.github.com/repos/riccardobl/JME-Monthly-gallery/contributors", function (status, content) {
         if (status) {
             var contributors = [];
@@ -95,18 +107,19 @@ function $main() {
 
 
     // Init gallery    
-    THUMBNAIL_GATEWAY = new DirectGate();
-    IMAGE_GATEWAY = new DirectGate();
-    GALLERY = new MonthlyGallery("http://hub.jmonkeyengine.org/t/", $IS_RELEASED ? new EmbeddedCORSGate() : new CorsGateForTheInternette());
-    GALLERY.getParserManager().addParser(ImageParser);
-    // GALLERY.getParserManager().addParser(VideoParser); REMOVED
-    //GALLERY.getParserManager().addParser(YoutubeParser); REMOVED
 
+
+    GALLERY = new MonthlyGallery("http://hub.jmonkeyengine.org/t/",HUB_GATEWAY);
+    GALLERY.getParserManager().addParser(ImageParser);
+
+
+    // Set date
     var vars = URI();
     setDate(vars.month && vars.year ? Calendar.fromMonthYear(vars.month, vars.year) : Calendar.fromMonthOffset(0));
 
 }
 
+// Set and get 
 function URI(data) {
     if (!data) {
         var hashes = window.location.hash.substring(1);
@@ -125,18 +138,19 @@ function URI(data) {
     }
 }
 
+
 function error404(type) {
     var container = $("#thumbnails");
     container.empty();
 
     var current_month = Calendar.toMonthOffset(DATE) === 0;
-    container.append("<div id='error'><img src='img/nomonkey.png' /><p>Thread not found.</p></div>");
-
+    if(current_month){
+        container.append("<div id='error'><p>The new monthly thread hasn't been started, yet!</p><p>You can use the arrows above to see the old galleries or <a target='_blank' href='http://hub.jmonkeyengine.org/new-topic?title=("+(DATE.month.charAt(0).toUpperCase()+DATE.month.slice(1))+" "+DATE.year+") Monthly WIP screenshot thread&body=I want to start the new monthly gallery with some cool screenshots of mine: '>Click here</a> and be the first monkey to post!</p></div>");
+    }else container.append("<div id='error'><img src='img/nomonkey.png' /><p>Thread not found.</p></div>");
 }
 
 
 function refreshThumbnailsView() {
-
     if (GALLERY_ELEMENTS.length === 0) {
         error404();
     } else {
@@ -153,9 +167,10 @@ function refreshThumbnailsView() {
             post.addClass("thumbnail_container");
             post.appendTo(container);
             
-            
-            if (Modernizr.cssfilters) {
-                var bgimg = $("<img id='blur_img_" + post_obj.post_id + "' />");
+            if (!$IS_MOBILE&&Modernizr.cssfilters) {
+                var bgimg= $("<img id='blur_img_" + post_obj.post_id + "' />");
+             //   bgimg.autohide([bgimg]);
+
                 bgimg.addClass("bgimg");
                 bgimg.appendTo(post);
             }
@@ -176,12 +191,17 @@ function refreshThumbnailsView() {
             }
             thumbnail.appendTo(post);
 
-            thumbnail.multiImg(imgs, 2000, function (src){return THUMBNAIL_GATEWAY.rewriteUrl(src); },(function (new_src) {
+
+            
+            thumbnail.multiImg(imgs, 2000, function (src){
+                return THUMBNAIL_GATEWAY.rewriteUrl(src);
+            },(function (new_src) {
                 var post = this[0];
                 var post_obj = this[1];
                 post.find(".thumbnail").each(function () {
                     $(this).removeClass("loading");
                 });
+                
                 post.find(".bgimg").each(function () {
                     var bgimg = $(this);
                     
@@ -194,7 +214,7 @@ function refreshThumbnailsView() {
                         if(a.name!=="src")new_img.attr(a.name, a.value);
                     }
                     new_img.data(bgimg.data());
-
+                   // new_img.autohide([new_img]);
                     bgimg.replaceWith(new_img);
                     
                     //bgimg.attr("src",new_src);
@@ -336,11 +356,8 @@ function openPost(post_obj) {
             showLabel: false,
             shares: ["email", "twitter", "facebook", "googleplus", "pinterest", "whatsapp"]
         });
-
-        
-        right_column.append(share);
-        
-       
+ 
+        right_column.append(share);       
 
         var content_table = $("<table id='content_table'></table>");
         content_table.appendTo(container);
@@ -352,9 +369,6 @@ function openPost(post_obj) {
                 row=$("<tr></tr>");
                 row.appendTo(content_table);
             }
-                //img.appendTo(left_column);
-            // else img.appendTo(right_column);
-            
             var img = $("<img id='wip_img_" + post_obj.post_id + "_" + i + "' src='img/loading.gif' />");
             img.addClass("posts_preview");
             img.attr("src", IMAGE_GATEWAY.rewriteUrl(elements[i].value));
@@ -370,9 +384,4 @@ function openPost(post_obj) {
 
         container.fadeIn(200);
     });
-    /*$(document).keyup(function(e) {
-     if (e.keyCode == 27) {
-            closePost();
-        }
-    });*/
 }

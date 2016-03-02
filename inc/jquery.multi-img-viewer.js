@@ -16,6 +16,8 @@
                 $(this).removeAttr("src").attr("src", src);
                 $debug("Error while loading [",$(this).attr("id"),"]",$(this).attr("src"),". Reload!");
             });
+                    //    img.autohide([img]);
+
         //    img.data("$firstDelay",10);
 
            // img.data("$passed_time",0);
@@ -43,30 +45,34 @@
         var finding=true;
         var img;
         
-        var start_loop_value=undefined;
-        while(finding){
-            if($.fn.multiImg._queue.length===0||$.fn.multiImg._queue_id===start_loop_value/*stop if we did a full cycle*/){
-                return;    
-            }
-            if(start_loop_value!==undefined)start_loop_value=$.fn.multiImg._queue_id;
+       // var start_loop_value=undefined;
+        //while(finding){ 
+            //if($.fn.multiImg._queue.length===0||$.fn.multiImg._queue_id===start_loop_value/*stop if we did a full cycle*/){
+            //    return;    
+            //}
+         //   if(start_loop_value!==undefined)start_loop_value=$.fn.multiImg._queue_id;
             img=$.fn.multiImg._queue[$.fn.multiImg._queue_id]; 
             
             
-            if(img&&document.contains(img[0])){
-                finding=false;
-            }else{
-                 $.fn.multiImg._queue.splice($.fn.multiImg._queue_id,1);
+            //if(img&&document.contains(img[0])){
+               // finding=false;
+        //    }else{
+          //       $.fn.multiImg._queue.splice($.fn.multiImg._queue_id,1);
+        //        img=undefined;
+          //  }
+            if(img&&(!img[0].complete||!img.data("$loaded"))){//||!img.data("inviewport"))){ 
                 img=undefined;
+                //finding=false;
             }
-            if(img&&(!img[0].complete||!img.data("$loaded"))){ 
-                img=undefined;
-                finding=false;
-            }
+        
+
             $.fn.multiImg._queue_id++;
             if($.fn.multiImg._queue_id>=$.fn.multiImg._queue.length)$.fn.multiImg._queue_id=0;
-        }
+      //  }
         
         if(!img)return;
+        
+
         var timestamp=new Date().getTime();
         var first_loop=img.data("$firstLoop");        
         if(!first_loop){
@@ -74,7 +80,9 @@
         }else{
             img.data("$firstLoop",false);
         }
-        
+               // Remove old img from the queue because we are going to recreate it.
+ 
+        $.fn.multiImg._queue.splice($.fn.multiImg._queue_id-1,1);
         img.data("$lastUpdate",timestamp);
         img.data("$loaded",false);
         var img_id=img.data("$img_id");
@@ -90,12 +98,14 @@
             //   this is required by some browser ( Firefox ) otherwise the imgs
             //   could end up corrupted...
             var new_src=imgs[img_id];
-            img.data("$img_id",img_id);        
+            img.data("$img_id",img_id);    
+            
             new_src=img.data("$onsrc")(new_src);
             
             var new_img=$("<img/>");
             new_img.attr("src",new_src);   
-            
+           // new_img.autohide([new_img]);
+
             new_img.multiImg( img.data("$imgs"),img.data("$delay"),img.data("$onsrc"),img.data("$callback"));
             for (i = 0; i < img[0].attributes.length; i++){
                 var a = img[0].attributes[i];
@@ -103,6 +113,7 @@
             }
             new_img.data(img.data());
             
+            img.data("markfordeletion",true);
             img.replaceWith(new_img);
             var callback=new_img.data("$callback");
             if(callback)callback(new_src);

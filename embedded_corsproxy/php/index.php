@@ -3,7 +3,8 @@
 
 
     $_ALLOWED_TARGETS=array(
-        "/^https?:\/\/hub.jmonkeyengine.org($|\/.*)$/i"
+        "/^https?:\/\/hub.jmonkeyengine.org($|\/.*)$/i",
+        "/^https?://api.imageresizer.io/v0.1/images($|\/.*)$/i"
     );
     
 

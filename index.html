@@ -41,13 +41,58 @@
         <script type="text/javascript" src="inc/utils.js"></script>
         <script type="text/javascript" src="inc/http.js"></script>
         <script type="text/javascript" src="inc/import.js"></script>  
-        
+        <script type="text/javascript" src="inc/tp/core-estimator.js"></script>  
+
         <script>   
+            // ##############################################
+            $VERSION=0.17;
+            $IS_RELEASED = document.domain === "release.jme-monthly-gallery.frk.wf"||document.domain === "monthly.jmonkeyengine.org";
+           
+            if(!$IS_RELEASED)$VERSION=Math.random();
+            // Adapted from http://detectmobilebrowsers.com/
+            $IS_MOBILE=/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            $CORES=1;
+            $_debug.enable =!$IS_RELEASED;
             $_debug.alert=false;
+            $_debug.verbose=true;
+            // ###############################################
+
+            var cnt=function(){       
+                $import(["Application.js"]);
+            }
+            
             function loading(status){
                 document.getElementById("loading").style.display=status?'table':'none';
             }
-            $import(["Application.js"]);
+            
+            // Set $IS_MOBILE=true for probably not powerful computers
+            if(!$IS_MOBILE&&typeof(Storage) !== "undefined") {
+                $verboseDebug("Storage is available!");
+                
+                var setCores=function(cores){
+                    $debug("Cores: ",cores);
+                    localStorage.setItem("cores",cores);
+                    $CORES=cores;
+                    if($CORES<4)$IS_MOBILE=true;
+                    cnt();
+                }
+                
+                var crs=localStorage.getItem("cores");
+                if(!crs){
+                    $debug("Guessing number of cores...");
+                    navigator.getHardwareConcurrency(setCores);
+                }else{
+                    $debug("Get number of cores from cache...")
+                    setCores(crs);
+                }
+            }else{
+                $CORES=1;
+                $IS_MOBILE=true;
+                cnt();
+            }
+            
+       
+            
         </script>
                 
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.min.css" />

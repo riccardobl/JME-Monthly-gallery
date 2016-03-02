@@ -1,8 +1,9 @@
-EmbeddedCORSGate=function(){
+UnionGate = function(gates){
+    // WIP
     this.rewriteUrl = function(url){
-        return "/embedded_corsproxy?target="+url;
+        return url;
     };
-     
+    
     this.traverse = function(url,callback){
         if(callback){
              this.asyncRewriteUrl(url,function(newurl){
